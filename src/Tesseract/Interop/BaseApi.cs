@@ -5,7 +5,9 @@ using InteropDotNet;
 
 namespace Tesseract.Interop
 {
-	/// <summary>
+    using InteropDotNet;
+
+    /// <summary>
 	/// The exported tesseract api signatures.
 	/// </summary>
 	/// <remarks>
@@ -208,7 +210,7 @@ namespace Tesseract.Interop
         
         public static int BaseApiSetVariable(HandleRef handle, string name, string value)
         {
-            IntPtr valuePtr = IntPtr.Zero;
+            var valuePtr = IntPtr.Zero;
             try {
                 valuePtr = MarshalHelper.StringToPtr(value, Encoding.UTF8);
                 return Native.BaseApiSetVariable(handle, name, valuePtr);
@@ -221,7 +223,7 @@ namespace Tesseract.Interop
         
         public static int BaseApiSetDebugVariable(HandleRef handle, string name, string value)
         {
-            IntPtr valuePtr = IntPtr.Zero;
+            var valuePtr = IntPtr.Zero;
             try {
                 valuePtr = MarshalHelper.StringToPtr(value, Encoding.UTF8);
                 return Native.BaseApiSetDebugVariable(handle, name, valuePtr);
@@ -242,47 +244,38 @@ namespace Tesseract.Interop
 
         public static string BaseAPIGetUTF8Text(HandleRef handle)
         {
-            IntPtr txtHandle = Native.BaseAPIGetUTF8TextInternal(handle);
+            var txtHandle = Native.BaseAPIGetUTF8TextInternal(handle);
             if (txtHandle != IntPtr.Zero)
             {
                 var result = MarshalHelper.PtrToString(txtHandle, Encoding.UTF8);
-                TessApi.Native.DeleteText(txtHandle);
+                Native.DeleteText(txtHandle);
                 return result;
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         public static string BaseAPIGetHOCRText(HandleRef handle, int pageNum)
         {
-            IntPtr txtHandle = Native.BaseAPIGetHOCRTextInternal(handle, pageNum);
+            var txtHandle = Native.BaseAPIGetHOCRTextInternal(handle, pageNum);
             if (txtHandle != IntPtr.Zero)
             {
                 var result = MarshalHelper.PtrToString(txtHandle, Encoding.UTF8);
-                TessApi.Native.DeleteText(txtHandle);
+                Native.DeleteText(txtHandle);
                 return htmlBeginTag + result + htmlEndTag;
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         public static string ResultIteratorGetUTF8Text(HandleRef handle, PageIteratorLevel level)
         {
-            IntPtr txtHandle = Native.ResultIteratorGetUTF8TextInternal(handle, level);
+            var txtHandle = Native.ResultIteratorGetUTF8TextInternal(handle, level);
             if (txtHandle != IntPtr.Zero)
             {
                 var result = MarshalHelper.PtrToString(txtHandle, Encoding.UTF8);
-                TessApi.Native.DeleteText(txtHandle);
+                Native.DeleteText(txtHandle);
                 return result;
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
     }
 }

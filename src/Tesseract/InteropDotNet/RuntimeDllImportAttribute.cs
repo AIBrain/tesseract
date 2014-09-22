@@ -26,7 +26,7 @@ namespace InteropDotNet
 
         public RuntimeDllImportAttribute(string libraryFileName)
         {
-            LibraryFileName = libraryFileName;
+            this.LibraryFileName = libraryFileName;
         }
     }
 }

@@ -10,25 +10,25 @@ namespace Tesseract
 		
 		protected DisposableBase()
 		{
-			IsDisposed = false;
+			this.IsDisposed = false;
 		}
 		
 		~DisposableBase() 
 		{
-			Dispose(false);
+			this.Dispose(false);
 			trace.TraceEvent(TraceEventType.Warning, 0, "{0} was not disposed off.", this);
 		}
 		
 		
 		public void Dispose()
 		{
-			Dispose(true);
+			this.Dispose(true);
 			
-			IsDisposed = true;			
+			this.IsDisposed = true;			
             GC.SuppressFinalize(this);
 
-            if (Disposed != null) {
-                Disposed(this, EventArgs.Empty);
+            if (this.Disposed != null) {
+                this.Disposed(this, EventArgs.Empty);
             }
 		}
 		
@@ -39,7 +39,7 @@ namespace Tesseract
 		
 		protected virtual void VerifyNotDisposed()
 		{
-			if(IsDisposed) throw new ObjectDisposedException(ToString());
+			if(this.IsDisposed) throw new ObjectDisposedException(this.ToString());
 		}
 		
 		protected abstract void Dispose(bool disposing);

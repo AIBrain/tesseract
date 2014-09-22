@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tesseract
+﻿namespace Tesseract
 {
 	/// <summary>
 	/// Represents orientation that the page would need to be rotated so that .

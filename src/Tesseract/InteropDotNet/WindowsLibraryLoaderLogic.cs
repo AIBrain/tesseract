@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 
 namespace InteropDotNet
 {
+    using Tesseract.InteropDotNet;
+
     class WindowsLibraryLoaderLogic : ILibraryLoaderLogic
     {
         public IntPtr LoadLibrary(string fileName)

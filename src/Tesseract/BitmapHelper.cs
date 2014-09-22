@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 
 namespace Tesseract
 {
-	/// <summary>
+    using System.Drawing;
+    using System.Drawing.Imaging;
+
+    /// <summary>
 	/// Description of BitmapHelper.
 	/// </summary>
 	public static unsafe class BitmapHelper
@@ -13,23 +15,23 @@ namespace Tesseract
         /// </summary>
         /// <param name="bitmap"></param>
         /// <returns></returns>
-        public static int GetBPP(System.Drawing.Bitmap bitmap)
+        public static int GetBPP(Bitmap bitmap)
         {
             switch (bitmap.PixelFormat) {
-                case System.Drawing.Imaging.PixelFormat.Format1bppIndexed: return 1;
-                case System.Drawing.Imaging.PixelFormat.Format4bppIndexed: return 4;
-                case System.Drawing.Imaging.PixelFormat.Format8bppIndexed: return 8;
-                case System.Drawing.Imaging.PixelFormat.Format16bppArgb1555:  
-                case System.Drawing.Imaging.PixelFormat.Format16bppGrayScale:
-                case System.Drawing.Imaging.PixelFormat.Format16bppRgb555:
-                case System.Drawing.Imaging.PixelFormat.Format16bppRgb565: return 16;
-                case System.Drawing.Imaging.PixelFormat.Format24bppRgb: return 24;
-                case System.Drawing.Imaging.PixelFormat.Format32bppArgb:
-                case System.Drawing.Imaging.PixelFormat.Format32bppPArgb:
-                case System.Drawing.Imaging.PixelFormat.Format32bppRgb: return 32;
-                case System.Drawing.Imaging.PixelFormat.Format48bppRgb: return 48;
-                case System.Drawing.Imaging.PixelFormat.Format64bppArgb:
-                case System.Drawing.Imaging.PixelFormat.Format64bppPArgb: return 64;
+                case PixelFormat.Format1bppIndexed: return 1;
+                case PixelFormat.Format4bppIndexed: return 4;
+                case PixelFormat.Format8bppIndexed: return 8;
+                case PixelFormat.Format16bppArgb1555:  
+                case PixelFormat.Format16bppGrayScale:
+                case PixelFormat.Format16bppRgb555:
+                case PixelFormat.Format16bppRgb565: return 16;
+                case PixelFormat.Format24bppRgb: return 24;
+                case PixelFormat.Format32bppArgb:
+                case PixelFormat.Format32bppPArgb:
+                case PixelFormat.Format32bppRgb: return 32;
+                case PixelFormat.Format48bppRgb: return 48;
+                case PixelFormat.Format64bppArgb:
+                case PixelFormat.Format64bppPArgb: return 64;
                 default: throw new ArgumentException(String.Format("The bitmap's pixel format of {0} was not recognised.", bitmap.PixelFormat), "bitmap");
             }
         }
@@ -49,7 +51,7 @@ namespace Tesseract
 		#endif
         public static void SetDataBit(byte* data, int index, byte value)
 		{			
-			byte* wordPtr = data + (index >> 3);
+			var wordPtr = data + (index >> 3);
             *wordPtr &= (byte)~(0x80 >> (index & 7)); 			// clear bit, note first pixel in the byte is most significant (1000 0000)
             *wordPtr |= (byte)((value & 1) << (7 - (index & 7)));		// set bit, if value is 1
 		}
@@ -67,7 +69,7 @@ namespace Tesseract
 		#endif
 		public static void SetDataQBit(byte* data, int index, byte value)
 		{			
-			byte* wordPtr = data + (index >> 1);
+			var wordPtr = data + (index >> 1);
             *wordPtr &= (byte)~(0xF0 >> (4 * (index & 1))); // clears qbit located at index, note like bit the qbit corresponding to the first pixel is the most significant (0xF0)
             *wordPtr |= (byte)((value & 0x0F) << (4 - (4 * (index & 1)))); // applys qbit to n
 		}

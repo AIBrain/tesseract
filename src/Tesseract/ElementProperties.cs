@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tesseract
+﻿namespace Tesseract
 {
 	/// <summary>
 	/// Represents properties that describe a text block's orientation.
 	/// </summary>
     public struct ElementProperties
     {
-        private Orientation orientation;
-        private TextLineOrder textLineOrder;
-        private WritingDirection writingDirection;
-        private float deskewAngle;
+        private readonly Orientation orientation;
+        private readonly TextLineOrder textLineOrder;
+        private readonly WritingDirection writingDirection;
+        private readonly float deskewAngle;
 
         public ElementProperties(Orientation orientation, TextLineOrder textLineOrder, WritingDirection writingDirection, float deskewAngle)
         {
@@ -27,7 +23,7 @@ namespace Tesseract
         /// </summary>
         public Orientation Orientation
         {
-            get { return orientation; }
+            get { return this.orientation; }
         }
 
         /// <summary>
@@ -35,7 +31,7 @@ namespace Tesseract
         /// </summary>
         public TextLineOrder TextLineOrder
         {
-            get { return textLineOrder; }
+            get { return this.textLineOrder; }
         }
 
         /// <summary>
@@ -43,7 +39,7 @@ namespace Tesseract
         /// </summary>
         public WritingDirection WritingDirection
         {
-            get { return writingDirection; }
+            get { return this.writingDirection; }
         }
 
         /// <summary>
@@ -51,7 +47,7 @@ namespace Tesseract
         /// </summary>
         public float DeskewAngle
         {
-            get { return deskewAngle; }
+            get { return this.deskewAngle; }
         }
     }
 }

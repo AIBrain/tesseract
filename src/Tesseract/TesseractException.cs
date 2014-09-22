@@ -7,7 +7,7 @@ namespace Tesseract
 	/// <summary>
 	/// Desctiption of TesseractException.
 	/// </summary>
-	public class TesseractException : Exception, ISerializable
+	public class TesseractException : Exception
 	{
 		public TesseractException()
 		{

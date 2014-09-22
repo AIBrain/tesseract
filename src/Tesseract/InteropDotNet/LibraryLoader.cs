@@ -1,13 +1,15 @@
 ﻿//  Copyright (c) 2014 Andrey Akinshin
 //  Project URL: https://github.com/AndreyAkinshin/InteropDotNet
 //  Distributed under the MIT License: http://opensource.org/licenses/MIT
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 
-namespace InteropDotNet
+namespace Tesseract.InteropDotNet
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Reflection;
+    using global::InteropDotNet;
+
     public sealed class LibraryLoader
     {
         readonly ILibraryLoaderLogic logic;
@@ -22,66 +24,66 @@ namespace InteropDotNet
 
         public IntPtr LoadLibrary(string fileName, string platformName = null)
         {            
-            fileName = FixUpLibraryName(fileName);
-            lock (syncLock)
+            fileName = this.FixUpLibraryName(fileName);
+            lock (this.syncLock)
             {
-                if (!loadedAssemblies.ContainsKey(fileName))
+                if (!this.loadedAssemblies.ContainsKey(fileName))
                 {
                     if (platformName == null)
                         platformName = SystemManager.GetPlatformName();
                     LibraryLoaderTrace.TraceInformation("Current platform: " + platformName);
-                    IntPtr dllHandle = CheckExecutingAssemblyDomain(fileName, platformName);
+                    var dllHandle = this.CheckExecutingAssemblyDomain(fileName, platformName);
                     if (dllHandle == IntPtr.Zero)
-                        dllHandle = CheckCurrentAppDomain(fileName, platformName);
+                        dllHandle = this.CheckCurrentAppDomain(fileName, platformName);
                     if (dllHandle == IntPtr.Zero)
-                        dllHandle = CheckWorkingDirecotry(fileName, platformName);
+                        dllHandle = this.CheckWorkingDirecotry(fileName, platformName);
 
                     if (dllHandle != IntPtr.Zero)
-                        loadedAssemblies[fileName] = dllHandle;
+                        this.loadedAssemblies[fileName] = dllHandle;
                     else
                         LibraryLoaderTrace.TraceError("Failed to find library \"{0}\" for platform {1}.", fileName, platformName);
                 }
             }
-            return loadedAssemblies[fileName];
+            return this.loadedAssemblies[fileName];
         }
 
         private IntPtr CheckExecutingAssemblyDomain(string fileName, string platformName)
         {
             var baseDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            return InternalLoadLibrary(baseDirectory, platformName, fileName);
+            return this.InternalLoadLibrary(baseDirectory, platformName, fileName);
         }
 
         private IntPtr CheckCurrentAppDomain(string fileName, string platformName)
         {
             var baseDirectory = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory);
-            return InternalLoadLibrary(baseDirectory, platformName, fileName);
+            return this.InternalLoadLibrary(baseDirectory, platformName, fileName);
         }
 
         private IntPtr CheckWorkingDirecotry(string fileName, string platformName)
         {
             var baseDirectory = Path.GetFullPath(Environment.CurrentDirectory);
-            return InternalLoadLibrary(baseDirectory, platformName, fileName);
+            return this.InternalLoadLibrary(baseDirectory, platformName, fileName);
         }
 
         private IntPtr InternalLoadLibrary(string baseDirectory, string platformName, string fileName)
         {
             var fullPath = Path.Combine(baseDirectory, Path.Combine(platformName, fileName));
-            return File.Exists(fullPath) ? logic.LoadLibrary(fullPath) : IntPtr.Zero;
+            return File.Exists(fullPath) ? this.logic.LoadLibrary(fullPath) : IntPtr.Zero;
         }
 
         public bool FreeLibrary(string fileName)
         {
-            fileName = FixUpLibraryName(fileName);
-            lock (syncLock)
+            fileName = this.FixUpLibraryName(fileName);
+            lock (this.syncLock)
             {
-                if (!IsLibraryLoaded(fileName))
+                if (!this.IsLibraryLoaded(fileName))
                 {
                     LibraryLoaderTrace.TraceWarning("Failed to free library \"{0}\" because it is not loaded", fileName);
                     return false;
                 }
-                if (logic.FreeLibrary(loadedAssemblies[fileName]))
+                if (this.logic.FreeLibrary(this.loadedAssemblies[fileName]))
                 {
-                    loadedAssemblies.Remove(fileName);
+                    this.loadedAssemblies.Remove(fileName);
                     return true;
                 }
                 return false;
@@ -90,19 +92,19 @@ namespace InteropDotNet
 
         public IntPtr GetProcAddress(IntPtr dllHandle, string name)
         {
-            return logic.GetProcAddress(dllHandle, name);
+            return this.logic.GetProcAddress(dllHandle, name);
         }
 
         public bool IsLibraryLoaded(string fileName)
         {
-            fileName = FixUpLibraryName(fileName);
-            lock (syncLock)
-                return loadedAssemblies.ContainsKey(fileName);
+            fileName = this.FixUpLibraryName(fileName);
+            lock (this.syncLock)
+                return this.loadedAssemblies.ContainsKey(fileName);
         }
 
         private string FixUpLibraryName(string fileName)
         {
-            return logic.FixUpLibraryName(fileName);
+            return this.logic.FixUpLibraryName(fileName);
 
         }
 

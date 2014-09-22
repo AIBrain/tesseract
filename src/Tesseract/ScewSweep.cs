@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tesseract
+﻿namespace Tesseract
 {
     /// <summary>
     /// Represents the parameters for a sweep search used by scew algorithms.
@@ -38,17 +34,17 @@ namespace Tesseract
 
         public int Reduction
         {
-            get { return reduction; }
+            get { return this.reduction; }
         }
         
         public float Range
         {
-            get { return range; }
+            get { return this.range; }
         }
 
         public float Delta
         {
-            get { return delta; }
+            get { return this.delta; }
         }
 
         #endregion

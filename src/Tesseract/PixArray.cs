@@ -8,7 +8,9 @@ using Tesseract.Internal;
 
 namespace Tesseract
 {
-	/// <summary>
+    using Interop;
+
+    /// <summary>
 	/// Represents an array of <see cref="Pix"/>.
 	/// </summary>
 	public class PixArray : DisposableBase, IEnumerable<Pix>
@@ -22,7 +24,7 @@ namespace Tesseract
 		/// <returns></returns>
 		public static PixArray LoadMultiPageTiffFromFile(string filename)
 		{			
-			var	pixaHandle = Interop.LeptonicaApi.Native.pixaReadMultipageTiff( filename );
+			var	pixaHandle = LeptonicaApi.Native.pixaReadMultipageTiff( filename );
 			if(pixaHandle == IntPtr.Zero)
 			{
 				throw new IOException(String.Format("Failed to load image '{0}'.", filename));
@@ -68,30 +70,29 @@ namespace Tesseract
 			/// <inheritdoc/>
 			public bool MoveNext()
 			{
-				VerifyArrayUnchanged();
-				VerifyNotDisposed();
+				this.VerifyArrayUnchanged();
+				this.VerifyNotDisposed();
 				
-				if(index < items.Length) {
-					if(items[index] == null) {
-						items[index] = array.GetPix(index);
+				if(this.index < this.items.Length) {
+					if(this.items[this.index] == null) {
+						this.items[this.index] = this.array.GetPix(this.index);
 					}
-					current = items[index];
-					index++;
+					this.current = this.items[this.index];
+					this.index++;
 					return true;
-				} else {
-					index = items.Length + 1;
-					current = null;
-					return false;
 				}
+			    this.index = this.items.Length + 1;
+			    this.current = null;
+			    return false;
 			}
 						
 			/// <inheritdoc/>
 			public Pix Current {
 				get {
-					VerifyArrayUnchanged();
-					VerifyNotDisposed();
+					this.VerifyArrayUnchanged();
+					this.VerifyNotDisposed();
 										
-					return current;
+					return this.current;
 				}
 			}
 			
@@ -100,22 +101,22 @@ namespace Tesseract
 			/// <inheritdoc/>
 			void IEnumerator.Reset()
 			{
-				VerifyArrayUnchanged();
-				VerifyNotDisposed();
+				this.VerifyArrayUnchanged();
+				this.VerifyNotDisposed();
 				
-				index = 0;
-				current = null;
+				this.index = 0;
+				this.current = null;
 			}
 			
 			/// <inheritdoc/>
 			object IEnumerator.Current {
 				get {
 					// note: Only the non-generic requires an exception check according the MSDN docs (Generic version just undefined if it's not currently pointing to an item). Go figure.
-					if(index == 0 || index == items.Length + 1) {
+					if(this.index == 0 || this.index == this.items.Length + 1) {
 						throw new InvalidOperationException("The enumerator is positioned either before the first item or after the last item .");
 					}
 					
-					return Current;
+					return this.Current;
 				}
 			}
 			
@@ -124,7 +125,7 @@ namespace Tesseract
 			/// <inheritdoc/>
 			private void VerifyArrayUnchanged()
 			{				
-				if(version != array.version) {
+				if(this.version != this.array.version) {
 					throw new InvalidOperationException("PixArray was modified; enumeration operation may not execute.");
 				}
 			}
@@ -136,10 +137,10 @@ namespace Tesseract
 			protected override void Dispose(bool disposing)
 			{
 				if(disposing) {
-					for (int i = 0; i < items.Length; i++) {
-						if(items[i] != null) {
-							items[i].Dispose();
-							items[i] = null;
+					for (var i = 0; i < this.items.Length; i++) {
+						if(this.items[i] != null) {
+							this.items[i].Dispose();
+							this.items[i] = null;
 						}
 					}
 				}
@@ -166,11 +167,11 @@ namespace Tesseract
 		
 		private PixArray(IntPtr handle)
 		{
-			_handle = new HandleRef(this, handle);
-			version = 1;
+			this._handle = new HandleRef(this, handle);
+			this.version = 1;
 			
 			// These will need to be updated whenever the PixA structure changes (i.e. a Pix is added or removed) though at the moment that isn't a problem.
-			_count = Interop.LeptonicaApi.Native.pixaGetCount(_handle);
+			this._count = LeptonicaApi.Native.pixaGetCount(this._handle);
 		}
 		
 		#endregion
@@ -183,8 +184,8 @@ namespace Tesseract
 		public int Count
 		{
 			get {
-				VerifyNotDisposed();
-				return _count; 
+				this.VerifyNotDisposed();
+				return this._count; 
 			}
 		}
 		
@@ -201,11 +202,11 @@ namespace Tesseract
 		public Pix GetPix(int index, PixArrayAccessType accessType = PixArrayAccessType.Clone)
 		{
 			Guard.Require("accessType", accessType == PixArrayAccessType.Clone || accessType == PixArrayAccessType.Copy, "Access type must be either copy or clone but was {0}.", accessType);
-			Guard.Require("index", index >= 0 && index < Count, "The index {0} must be between 0 and {1}.", index, Count);
+			Guard.Require("index", index >= 0 && index < this.Count, "The index {0} must be between 0 and {1}.", index, this.Count);
 			
-			VerifyNotDisposed();
+			this.VerifyNotDisposed();
 			
-			var pixHandle = Interop.LeptonicaApi.Native.pixaGetPix(_handle, index, accessType);
+			var pixHandle = LeptonicaApi.Native.pixaGetPix(this._handle, index, accessType);
 			if(pixHandle == IntPtr.Zero) {
 				throw new InvalidOperationException(String.Format("Failed to retrieve pix {0}.", pixHandle));
 			}
@@ -235,9 +236,9 @@ namespace Tesseract
 		
 		protected override void Dispose(bool disposing)
 		{
-			IntPtr handle = _handle.Handle;
-			Interop.LeptonicaApi.Native.pixaDestroy(ref handle);
-			_handle = new HandleRef(this, handle);
+			var handle = this._handle.Handle;
+			LeptonicaApi.Native.pixaDestroy(ref handle);
+			this._handle = new HandleRef(this, handle);
 		}
 		
 		#endregion

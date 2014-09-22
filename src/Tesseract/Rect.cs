@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
 
 namespace Tesseract
 {
@@ -11,10 +8,10 @@ namespace Tesseract
 
         #region Fields
 
-        private int x;
-        private int y;
-        private int width;
-        private int height;
+        private readonly int x;
+        private readonly int y;
+        private readonly int width;
+        private readonly int height;
 
         #endregion
 
@@ -39,32 +36,32 @@ namespace Tesseract
 
         public int X1
         {
-            get { return x; }
+            get { return this.x; }
         }
 
         public int Y1
         {
-            get { return y; }
+            get { return this.y; }
         }
 
         public int X2
         {
-            get { return x + width; }
+            get { return this.x + this.width; }
         }
 
         public int Y2
         {
-            get { return y + height; }
+            get { return this.y + this.height; }
         }
 
         public int Width
         {
-            get { return width; }
+            get { return this.width; }
         }
 
         public int Height
         {
-            get { return height; }
+            get { return this.height; }
         }
 
         #endregion
@@ -72,7 +69,7 @@ namespace Tesseract
         #region Equals and GetHashCode implementation
         public override bool Equals(object obj)
         {
-            return (obj is Rect) && Equals((Rect)obj);
+            return (obj is Rect) && this.Equals((Rect)obj);
         }
 
         public bool Equals(Rect other)
@@ -82,12 +79,12 @@ namespace Tesseract
 
         public override int GetHashCode()
         {
-            int hashCode = 0;
+            var hashCode = 0;
             unchecked {
-                hashCode += 1000000007 * x.GetHashCode();
-                hashCode += 1000000009 * y.GetHashCode();
-                hashCode += 1000000021 * width.GetHashCode();
-                hashCode += 1000000033 * height.GetHashCode();
+                hashCode += 1000000007 * this.x.GetHashCode();
+                hashCode += 1000000009 * this.y.GetHashCode();
+                hashCode += 1000000021 * this.width.GetHashCode();
+                hashCode += 1000000033 * this.height.GetHashCode();
             }
             return hashCode;
         }
@@ -107,7 +104,7 @@ namespace Tesseract
         
 		public override string ToString()
 		{
-			return string.Format("[Rect X={0}, Y={1}, Width={2}, Height={3}]", x, y, width, height);
+			return string.Format("[Rect X={0}, Y={1}, Width={2}, Height={3}]", this.x, this.y, this.width, this.height);
 		}
 
         

@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Tesseract
 {
     public struct Scew
     {
-        private float angle;
-        private float confidence;
+        private readonly float angle;
+        private readonly float confidence;
 
         public Scew(float angle, float confidence)
         {
@@ -17,41 +15,37 @@ namespace Tesseract
 
         public float Angle
         {
-            get { return angle; }
+            get { return this.angle; }
         }
 
 
         public float Confidence
         {
-            get { return confidence; }
+            get { return this.confidence; }
         }
-
-        #region ToString
 
         public override string ToString()
         {
-            return String.Format("Scew: {0} [conf: {1}]", Angle, Confidence);
+            return String.Format("Scew: {0} [conf: {1}]", this.Angle, this.Confidence);
         }
-
-        #endregion
 
         #region Equals and GetHashCode implementation
         public override bool Equals(object obj)
         {
-            return (obj is Scew) && Equals((Scew)obj);
+            return (obj is Scew) && this.Equals((Scew)obj);
         }
 
         public bool Equals(Scew other)
         {
-            return this.confidence == other.confidence && this.angle == other.angle;
+            return Math.Abs( this.confidence - other.confidence ) < float.Epsilon && Math.Abs( this.angle - other.angle ) < float.Epsilon;
         }
 
         public override int GetHashCode()
         {
-            int hashCode = 0;
+            var hashCode = 0;
             unchecked {
-                hashCode += 1000000007 * angle.GetHashCode();
-                hashCode += 1000000009 * confidence.GetHashCode();
+                hashCode += 1000000007 * this.angle.GetHashCode();
+                hashCode += 1000000009 * this.confidence.GetHashCode();
             }
             return hashCode;
         }

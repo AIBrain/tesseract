@@ -1,15 +1,17 @@
 ﻿//  Copyright (c) 2014 Andrey Akinshin
 //  Project URL: https://github.com/AndreyAkinshin/InteropDotNet
 //  Distributed under the MIT License: http://opensource.org/licenses/MIT
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.InteropServices;
-using System.Threading;
 
-namespace InteropDotNet
+namespace Tesseract.InteropDotNet
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using System.Reflection.Emit;
+    using System.Runtime.InteropServices;
+    using System.Threading;
+    using global::InteropDotNet;
+
     static class InteropRuntimeImplementer
     {
         public static T CreateInstance<T>() where T : class
@@ -44,7 +46,7 @@ namespace InteropDotNet
         {
             var methodInfoArray = interfaceType.GetMethods();
             var methods = new MethodItem[methodInfoArray.Length];
-            for (int i = 0; i < methodInfoArray.Length; i++)
+            for (var i = 0; i < methodInfoArray.Length; i++)
             {
                 methods[i] = new MethodItem { Info = methodInfoArray[i] };
                 var attribute = GetRuntimeDllImportAttribute(methodInfoArray[i]);
@@ -150,7 +152,7 @@ namespace InteropDotNet
                 // Load field
                 ilGen.Emit(OpCodes.Ldfld, method.FieldInfo);
                 // Load arguments
-                for (int i = 0; i < infoArray.Length; i++)
+                for (var i = 0; i < infoArray.Length; i++)
                     LdArg(ilGen, i + 1);
                 // Invoke delegate
                 ilGen.Emit(OpCodes.Callvirt, method.DelegateType.GetMethod("Invoke"));
@@ -186,7 +188,7 @@ namespace InteropDotNet
             // Create ILGenerator
             var ilGen = ctorBuilder.GetILGenerator();
             // Declare locals for library handles
-            for (int i = 0; i < libraries.Count; i++)
+            for (var i = 0; i < libraries.Count; i++)
                 ilGen.DeclareLocal(typeof(IntPtr));
             // Declare locals for a method handle
             ilGen.DeclareLocal(typeof(IntPtr));
@@ -194,7 +196,7 @@ namespace InteropDotNet
             ilGen.Emit(OpCodes.Ldarg_0);
             // Run objector..ctor()
             ilGen.Emit(OpCodes.Call, baseCtor);
-            for (int i = 0; i < libraries.Count; i++)
+            for (var i = 0; i < libraries.Count; i++)
             {
                 // Preparing
                 var library = libraries[i];
@@ -282,7 +284,7 @@ namespace InteropDotNet
            MethodAttributes attributes, Type returnType, LightParameterInfo[] infoArray)
         {
             var methodBuilder = typeBuilder.DefineMethod(name, attributes, returnType, GetParameterTypeArray(infoArray));
-            for (int parameterIndex = 0; parameterIndex < infoArray.Length; parameterIndex++)
+            for (var parameterIndex = 0; parameterIndex < infoArray.Length; parameterIndex++)
                 methodBuilder.DefineParameter(parameterIndex + 1,
                     infoArray[parameterIndex].Attributes, infoArray[parameterIndex].Name);
             return methodBuilder;
@@ -300,24 +302,24 @@ namespace InteropDotNet
             public Type DelegateType { get; set; }
             public FieldInfo FieldInfo { get; set; }
 
-            public string Name { get { return Info.Name; } }
-            public Type ReturnType { get { return Info.ReturnType; } }
+            public string Name { get { return this.Info.Name; } }
+            public Type ReturnType { get { return this.Info.ReturnType; } }
         }
 
         private class LightParameterInfo
         {
             public LightParameterInfo(ParameterInfo info)
             {
-                Type = info.ParameterType;
-                Name = info.Name;
-                Attributes = info.Attributes;
+                this.Type = info.ParameterType;
+                this.Name = info.Name;
+                this.Attributes = info.Attributes;
             }
 
             public LightParameterInfo(Type type, string name)
             {
-                Type = type;
-                Name = name;
-                Attributes = ParameterAttributes.HasDefault;
+                this.Type = type;
+                this.Name = name;
+                this.Attributes = ParameterAttributes.HasDefault;
             }
 
             public Type Type { get; private set; }
@@ -334,7 +336,7 @@ namespace InteropDotNet
         {
             var parameters = methodInfo.GetParameters();
             var infoList = new List<LightParameterInfo>();
-            for (int i = 0; i < parameters.Length; i++)
+            for (var i = 0; i < parameters.Length; i++)
                 if (mode != InfoArrayMode.EndInvoke || parameters[i].ParameterType.IsByRef)
                     infoList.Add(new LightParameterInfo(parameters[i]));
             if (mode == InfoArrayMode.BeginInvoke)
@@ -345,7 +347,7 @@ namespace InteropDotNet
             if (mode == InfoArrayMode.EndInvoke)
                 infoList.Add(new LightParameterInfo(typeof(IAsyncResult), "result"));
             var infoArray = new LightParameterInfo[infoList.Count];
-            for (int i = 0; i < infoList.Count; i++)
+            for (var i = 0; i < infoList.Count; i++)
                 infoArray[i] = infoList[i];
             return infoArray;
         }
@@ -353,7 +355,7 @@ namespace InteropDotNet
         private static Type[] GetParameterTypeArray(LightParameterInfo[] infoArray)
         {
             var typeArray = new Type[infoArray.Length];
-            for (int i = 0; i < infoArray.Length; i++)
+            for (var i = 0; i < infoArray.Length; i++)
                 typeArray[i] = infoArray[i].Type;
             return typeArray;
         }

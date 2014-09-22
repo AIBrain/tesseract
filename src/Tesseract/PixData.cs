@@ -1,20 +1,19 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using Tesseract.Interop;
 
 namespace Tesseract
 {
-	public unsafe class PixData
+    using Interop;
+
+    public unsafe class PixData
 	{
 		public Pix Pix { get; private set; }
 
 		
 		internal PixData(Pix pix)
 		{		
-            Pix = pix;
-            Data = Interop.LeptonicaApi.Native.pixGetData(Pix.Handle);
-            WordsPerLine = Interop.LeptonicaApi.Native.pixGetWpl(Pix.Handle);
+            this.Pix = pix;
+            this.Data = LeptonicaApi.Native.pixGetData(this.Pix.Handle);
+            this.WordsPerLine = LeptonicaApi.Native.pixGetWpl(this.Pix.Handle);
 		}
 		
 		/// <summary>
@@ -36,7 +35,7 @@ namespace Tesseract
         /// </remarks>
         public void EndianByteSwap()
         {
-            Interop.LeptonicaApi.Native.pixEndianByteSwap(Pix.Handle);
+            LeptonicaApi.Native.pixEndianByteSwap(this.Pix.Handle);
         }
 
 #if Net45
@@ -70,7 +69,7 @@ namespace Tesseract
 #endif
 		public static void SetDataBit(uint* data, int index, uint value)
 		{
-			uint* wordPtr = data + ((index) >> 5);
+			var wordPtr = data + ((index) >> 5);
             *wordPtr &= ~(0x80000000 >> ((index) & 31));
             *wordPtr |= (value << (31 - ((index) & 31)));		
 		}
@@ -97,7 +96,7 @@ namespace Tesseract
 #endif
 		public static void SetDataDIBit(uint* data, int index, uint value)
 		{
-			uint* wordPtr = data + ((index) >> 4);
+			var wordPtr = data + ((index) >> 4);
             *wordPtr &= ~(0xc0000000 >> (2 * ((index) & 15)));
             *wordPtr |= (((value) & 3) << (30 - 2 * ((index) & 15)));			
 		}
@@ -123,7 +122,7 @@ namespace Tesseract
 #endif
 		public static void SetDataQBit(uint* data, int index, uint value)
 		{
-			uint* wordPtr = data + ((index) >> 3);
+			var wordPtr = data + ((index) >> 3);
             *wordPtr &= ~(0xf0000000 >> (4 * ((index) & 7)));
             *wordPtr |= (((value) & 15) << (28 - 4 * ((index) & 7)));		
 		}
@@ -135,18 +134,15 @@ namespace Tesseract
 #if Net45
       	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-		public static uint GetDataByte(uint* data, int index)
-		{
-			// Must do direct size comparison to detect x64 process, since in this will be jited out and results in a lot faster code (e.g. 6x faster for image conversion)
+		public static uint GetDataByte(uint* data, int index) {
+            // Must do direct size comparison to detect x64 process, since in this will be jited out and results in a lot faster code (e.g. 6x faster for image conversion)
 			if(IntPtr.Size == 8) {
         		return *((byte*)((ulong)((byte*)data + index) ^ 3));
-			} else {
-            	return *((byte*)((uint)((byte*)data + index) ^ 3));
 			}
-			// Architecture types that are NOT little edian are not currently supported
+            return *((byte*)((uint)((byte*)data + index) ^ 3));
+            // Architecture types that are NOT little edian are not currently supported
             //return *((byte*)data + index);  
-		}
-
+        }
 
         /// <summary>
         /// Sets the pixel value for a 8bpp image.
@@ -174,18 +170,15 @@ namespace Tesseract
 #if Net45
       	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-		public static uint GetDataTwoByte(uint* data, int index)
-		{	
-			// Must do direct size comparison to detect x64 process, since in this will be jited out and results in a lot faster code (e.g. 6x faster for image conversion)
+		public static uint GetDataTwoByte(uint* data, int index) {
+            // Must do direct size comparison to detect x64 process, since in this will be jited out and results in a lot faster code (e.g. 6x faster for image conversion)
 			if(IntPtr.Size == 8) {
                 return *(ushort*)((ulong)((ushort*)data + index) ^ 2);
-			} else {
-                return *(ushort*)((uint)((ushort*)data + index) ^ 2);
 			}
-			// Architecture types that are NOT little edian are not currently supported
+            return *(ushort*)((uint)((ushort*)data + index) ^ 2);
+            // Architecture types that are NOT little edian are not currently supported
             // return *((ushort*)data + index);
-		}
-
+        }
 
         /// <summary>
         /// Sets the pixel value for a 16bpp image.

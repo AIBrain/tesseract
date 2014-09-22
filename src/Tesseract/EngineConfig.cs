@@ -1,25 +1,19 @@
 ﻿
-using System;
-
 namespace Tesseract
 {
 	public class EngineConfig
 	{
-		public EngineConfig()
-		{
-		}
-		
-		string _dataPath;
+	    string _dataPath;
 		string _language;
 				
 		public string DataPath {
-			get { return _dataPath; }
-			set { _dataPath = value; }
+			get { return this._dataPath; }
+			set { this._dataPath = value; }
 		}
 		
 		public string Language {
-			get { return _language; }
-			set { _language = value; }
+			get { return this._language; }
+			set { this._language = value; }
 		}
 	}
 }

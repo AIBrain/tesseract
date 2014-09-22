@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tesseract
+﻿namespace Tesseract
 {
 	/// <summary>
 	/// The grapheme cluster within a line of text are laid out logically in this direction,

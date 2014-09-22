@@ -2,6 +2,8 @@
 
 namespace Tesseract
 {
+    using Interop;
+
     public sealed class ResultIterator : PageIterator
     {
         internal ResultIterator(IntPtr handle)
@@ -11,12 +13,12 @@ namespace Tesseract
 
         public float GetConfidence(PageIteratorLevel level)
         {
-            return Interop.TessApi.Native.ResultIteratorGetConfidence(handle, level);
+            return TessApi.Native.ResultIteratorGetConfidence(this.handle, level);
         }
 
         public string GetText(PageIteratorLevel level)
         {
-            return Interop.TessApi.ResultIteratorGetUTF8Text(handle, level);
+            return TessApi.ResultIteratorGetUTF8Text(this.handle, level);
         }
     }
 }

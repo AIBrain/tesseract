@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
 using InteropDotNet;
 
 namespace Tesseract.Interop
 {
-	/// <summary>
+    using InteropDotNet;
+
+    /// <summary>
 	/// The exported leptonica api signatures.
 	/// </summary>
 	/// <remarks>

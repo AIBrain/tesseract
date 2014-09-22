@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -32,7 +31,7 @@ namespace Tesseract.Interop
         public static int StrLength(IntPtr handle)
         {
             var ptr = (byte*)handle.ToPointer();
-            int length = 0;
+            var length = 0;
             while (*(ptr + length) != 0) {
                 length++;
             }

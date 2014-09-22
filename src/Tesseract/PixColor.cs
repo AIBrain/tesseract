@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Tesseract
 {
+    using System.Drawing;
+
     [StructLayout(LayoutKind.Sequential, Pack=1)]
 	public struct PixColor : IEquatable<PixColor>
     {
-        private byte red;
-        private byte blue;
-        private byte green;
-        private byte alpha;
+        private readonly byte red;
+        private readonly byte blue;
+        private readonly byte green;
+        private readonly byte alpha;
 
         public PixColor(byte red, byte green, byte blue, byte alpha = 255)
         {
@@ -21,10 +21,10 @@ namespace Tesseract
             this.alpha = alpha;
         }
 
-        public byte Red { get { return red; } }
-        public byte Green { get { return green; } }
-        public byte Blue { get { return blue; } }
-        public byte Alpha { get { return alpha; } }
+        public byte Red { get { return this.red; } }
+        public byte Green { get { return this.green; } }
+        public byte Blue { get { return this.blue; } }
+        public byte Alpha { get { return this.alpha; } }
 
         public static PixColor FromRgba(uint value)
         {
@@ -46,15 +46,15 @@ namespace Tesseract
 
         public uint ToRGBA()
         {
-            return BitmapHelper.EncodeAsRGBA(red, green, blue, alpha);
+            return BitmapHelper.EncodeAsRGBA(this.red, this.green, this.blue, this.alpha);
         }
 
-        public static explicit operator System.Drawing.Color(PixColor color)
+        public static explicit operator Color(PixColor color)
         {
-            return System.Drawing.Color.FromArgb(color.alpha, color.red, color.green, color.blue);
+            return Color.FromArgb(color.alpha, color.red, color.green, color.blue);
         }
 
-        public static explicit operator PixColor(System.Drawing.Color color)
+        public static explicit operator PixColor(Color color)
         {
             return new PixColor(color.R, color.G, color.B, color.A);
         }
@@ -63,7 +63,7 @@ namespace Tesseract
         #region Equals and GetHashCode implementation
         public override bool Equals(object obj)
 		{
-			return (obj is PixColor) && Equals((PixColor)obj);
+			return (obj is PixColor) && this.Equals((PixColor)obj);
 		}
         
 		public bool Equals(PixColor other)
@@ -73,12 +73,12 @@ namespace Tesseract
         
 		public override int GetHashCode()
 		{
-			int hashCode = 0;
+			var hashCode = 0;
 			unchecked {
-				hashCode += 1000000007 * red.GetHashCode();
-				hashCode += 1000000009 * blue.GetHashCode();
-				hashCode += 1000000021 * green.GetHashCode();
-				hashCode += 1000000033 * alpha.GetHashCode();
+				hashCode += 1000000007 * this.red.GetHashCode();
+				hashCode += 1000000009 * this.blue.GetHashCode();
+				hashCode += 1000000021 * this.green.GetHashCode();
+				hashCode += 1000000033 * this.alpha.GetHashCode();
 			}
 			return hashCode;
 		}
@@ -96,7 +96,7 @@ namespace Tesseract
 
         public override string ToString()
         {
-            return String.Format("Color(0x{0:X})", ToRGBA());
+            return String.Format("Color(0x{0:X})", this.ToRGBA());
         }
 
     }
