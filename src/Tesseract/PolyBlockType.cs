@@ -1,7 +1,6 @@
-﻿namespace Tesseract
-{
-    public enum PolyBlockType : int
-    {
+﻿namespace Tesseract {
+
+    public enum PolyBlockType : int {
         Unknown,
         FlowingText,
         HeadingText,
@@ -9,10 +8,10 @@
         Table,
         VerticalText,
         CaptionText,
-        FlowingImage, 
+        FlowingImage,
         HeadingImage,
         PullOutImage,
-        HorizontalLine, 
+        HorizontalLine,
         VerticalLine,
         Noise,
         Count

@@ -3,29 +3,30 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Tesseract
-{
+namespace Tesseract {
+
     using Interop;
 
-    public unsafe sealed class Pix : DisposableBase
-    {
+    public sealed class Pix : DisposableBase {
+
         #region Constants
 
         // Skew Defaults
         public const int DefaultBinarySearchReduction = 2; // binary search part
+
         public const int DefaultBinaryThreshold = 130;
-		
+
         /// <summary>
         /// A small angle, in radians, for threshold checking. Equal to about 0.06 degrees.
         /// </summary>
         private const float VerySmallAngle = 0.001F;
 
         private static readonly List<int> AllowedDepths = new List<int> { 1, 2, 4, 8, 16, 32 };
-        
-    	/// <summary>
-    	/// Used to lookup image formats by extension.
-    	/// </summary>
-    	private static readonly Dictionary<string, ImageFormat> imageFomatLookup = new Dictionary<string, ImageFormat>
+
+        /// <summary>
+        /// Used to lookup image formats by extension.
+        /// </summary>
+        private static readonly Dictionary<string, ImageFormat> imageFomatLookup = new Dictionary<string, ImageFormat>
     		{
     			{ ".jpg", ImageFormat.JfifJpeg },
     			{ ".jpeg", ImageFormat.JfifJpeg },
@@ -35,8 +36,8 @@ namespace Tesseract
     			{ ".png", ImageFormat.Png },
     			{ ".bmp", ImageFormat.Bmp }
     		};
-    	
-        #endregion
+
+        #endregion Constants
 
         #region Fields
 
@@ -46,40 +47,41 @@ namespace Tesseract
         private readonly int height;
         private readonly int depth;
 
-        #endregion
+        #endregion Fields
 
         #region Create\Load methods
 
-        public static Pix Create(int width, int height, int depth)
-        {
-            if (!AllowedDepths.Contains(depth))
-                throw new ArgumentException("Depth must be 1, 2, 4, 8, 16, or 32 bits.", "depth");
+        public static Pix Create( int width, int height, int depth ) {
+            if ( !AllowedDepths.Contains( depth ) )
+                throw new ArgumentException( "Depth must be 1, 2, 4, 8, 16, or 32 bits.", "depth" );
 
-            if (width <= 0) throw new ArgumentException("Width must be greater than zero", "width");
-            if (height <= 0) throw new ArgumentException("Height must be greater than zero", "height");
+            if ( width <= 0 )
+                throw new ArgumentException( "Width must be greater than zero", "width" );
+            if ( height <= 0 )
+                throw new ArgumentException( "Height must be greater than zero", "height" );
 
-            var handle = LeptonicaApi.Native.pixCreate(width, height, depth);
-            if (handle == IntPtr.Zero) throw new InvalidOperationException("Failed to create pix, this normally occurs because the requested image size is too large, please check Standard Error Output.");
+            var handle = LeptonicaApi.Native.pixCreate( width, height, depth );
+            if ( handle == IntPtr.Zero )
+                throw new InvalidOperationException( "Failed to create pix, this normally occurs because the requested image size is too large, please check Standard Error Output." );
 
-            return Create(handle);
+            return Create( handle );
         }
 
-        public static Pix Create(IntPtr handle)
-        {
-            if (handle == IntPtr.Zero) throw new ArgumentException("Pix handle must not be zero (null).", "handle");
+        public static Pix Create( IntPtr handle ) {
+            if ( handle == IntPtr.Zero )
+                throw new ArgumentException( "Pix handle must not be zero (null).", "handle" );
 
-            return new Pix(handle);
+            return new Pix( handle );
         }
 
-        public static Pix LoadFromFile(string filename)
-        {
-            var pixHandle = LeptonicaApi.Native.pixRead(filename);
-            if (pixHandle == IntPtr.Zero) {
-                throw new IOException(String.Format("Failed to load image '{0}'.", filename));
+        public static Pix LoadFromFile( string filename ) {
+            var pixHandle = LeptonicaApi.Native.pixRead( filename );
+            if ( pixHandle == IntPtr.Zero ) {
+                throw new IOException( String.Format( "Failed to load image '{0}'.", filename ) );
             }
-            return Create(pixHandle);
+            return Create( pixHandle );
         }
-        
+
         /// <summary>
         /// Creates a new pix instance using an existing handle to a pix structure.
         /// </summary>
@@ -87,103 +89,103 @@ namespace Tesseract
         /// Note that the resulting instance takes ownership of the data structure.
         /// </remarks>
         /// <param name="handle"></param>
-        private Pix(IntPtr handle)
-        {
-            if (handle == IntPtr.Zero) throw new ArgumentNullException("handle");
+        private Pix( IntPtr handle ) {
+            if ( handle == IntPtr.Zero )
+                throw new ArgumentNullException( "handle" );
 
-            this.handle = new HandleRef(this, handle);
-            this.width = LeptonicaApi.Native.pixGetWidth(this.handle);
-            this.height = LeptonicaApi.Native.pixGetHeight(this.handle);
-            this.depth = LeptonicaApi.Native.pixGetDepth(this.handle);
+            this.handle = new HandleRef( this, handle );
+            this.width = LeptonicaApi.Native.pixGetWidth( this.handle );
+            this.height = LeptonicaApi.Native.pixGetHeight( this.handle );
+            this.depth = LeptonicaApi.Native.pixGetDepth( this.handle );
 
-            var colorMapHandle = LeptonicaApi.Native.pixGetColormap(this.handle);
-            if (colorMapHandle != IntPtr.Zero) {
-                this.colormap = new PixColormap(colorMapHandle);
+            var colorMapHandle = LeptonicaApi.Native.pixGetColormap( this.handle );
+            if ( colorMapHandle != IntPtr.Zero ) {
+                this.colormap = new PixColormap( colorMapHandle );
             }
         }
 
-        #endregion
+        #endregion Create\Load methods
 
         #region Properties
 
-        public PixColormap Colormap
-        {
-            get { return this.colormap; }
-            set
-            {
-                if (value != null) {
-                    if (LeptonicaApi.Native.pixSetColormap(this.handle, value.Handle) == 0)
-                    {
+        public PixColormap Colormap {
+            get {
+                return this.colormap;
+            }
+            set {
+                if ( value != null ) {
+                    if ( LeptonicaApi.Native.pixSetColormap( this.handle, value.Handle ) == 0 ) {
                         this.colormap = value;
                     }
-                } else {
-                    if (LeptonicaApi.Native.pixDestroyColormap(this.handle) == 0)
-                    {
+                }
+                else {
+                    if ( LeptonicaApi.Native.pixDestroyColormap( this.handle ) == 0 ) {
                         this.colormap = null;
                     }
                 }
             }
         }
 
-        public int Width
-        {
-            get { return this.width; }
+        public int Width {
+            get {
+                return this.width;
+            }
         }
 
-        public int Height
-        {
-            get { return this.height; }
+        public int Height {
+            get {
+                return this.height;
+            }
         }
 
-        public int Depth
-        {
-            get { return this.depth; }
+        public int Depth {
+            get {
+                return this.depth;
+            }
         }
 
-        public PixData GetData()
-        {
-            return new PixData(this);
+        public PixData GetData() {
+            return new PixData( this );
         }
 
-        internal HandleRef Handle
-        {
-            get { return this.handle; }
+        internal HandleRef Handle {
+            get {
+                return this.handle;
+            }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Save methods
-
 
         /// <summary>
         /// Saves the image to the specified file.
         /// </summary>
         /// <param name="filename">The path to the file.</param>
         /// <param name="format">The format to use when saving the image, if not specified the file extension is used to guess the format.</param>
-        public void Save(string filename, ImageFormat? format = null)
-        {
-        	ImageFormat actualFormat;
-        	if(!format.HasValue) {
-        		var extension = Path.GetExtension(filename).ToLowerInvariant();
-        		if(!imageFomatLookup.TryGetValue(extension, out actualFormat)) {
-        			// couldn't find matching format, perhaps there is no extension or it's not recognised, fallback to default.
-        			actualFormat = ImageFormat.Default;
-        		}
-        	} else {        		
-        		actualFormat = format.Value;
-        	}
+        public void Save( string filename, ImageFormat? format = null ) {
+            ImageFormat actualFormat;
+            if ( !format.HasValue ) {
+                // ReSharper disable once PossibleNullReferenceException
+                var extension = Path.GetExtension( filename ).ToLowerInvariant();
+                if ( !imageFomatLookup.TryGetValue( extension, out actualFormat ) ) {
+                    // couldn't find matching format, perhaps there is no extension or it's not recognised, fallback to default.
+                    actualFormat = ImageFormat.Default;
+                }
+            }
+            else {
+                actualFormat = format.Value;
+            }
 
-
-            if (LeptonicaApi.Native.pixWrite(filename, this.handle, actualFormat) != 0)
-            {
-                throw new IOException(String.Format("Failed to save image '{0}'.", filename));
+            if ( LeptonicaApi.Native.pixWrite( filename, this.handle, actualFormat ) != 0 ) {
+                throw new IOException( String.Format( "Failed to save image '{0}'.", filename ) );
             }
         }
 
-        #endregion
-        
+        #endregion Save methods
+
         #region Clone
-      
+
         /// <summary>
         /// Increments this pix's reference count and returns a reference to the same pix data.
         /// </summary>
@@ -191,7 +193,7 @@ namespace Tesseract
         /// A "clone" is simply a reference to an existing pix. It is implemented this way because
         /// image can be large and hence expensive to copy and extra handles need to be made with a simple
         /// policy to avoid double frees and memory leaks.
-        /// 
+        ///
         /// The general usage protocol is:
         /// <list type="number">
         /// 	<item>Whenever you want a new reference to an existing <see cref="Pix" /> call <see cref="Pix.Clone" />.</item>
@@ -202,14 +204,13 @@ namespace Tesseract
         /// </list>
         /// </remarks>
         /// <returns>The pix with it's reference count incremented.</returns>
-        public Pix Clone()
-		{
-            var clonedHandle = LeptonicaApi.Native.pixClone(this.handle);
-			return new Pix(clonedHandle);
+        public Pix Clone() {
+            var clonedHandle = LeptonicaApi.Native.pixClone( this.handle );
+            return new Pix( clonedHandle );
         }
-        
-        #endregion
-        
+
+        #endregion Clone
+
         #region Image manipulation
 
         /// <summary>
@@ -221,10 +222,9 @@ namespace Tesseract
         /// it returns a deskewed image; otherwise, it returns a clone.
         /// </remarks>
         /// <returns>Returns deskewed image if confidence was high enough, otherwise returns clone of original pix.</returns>
-        public Pix Deskew()
-        {
+        public Pix Deskew() {
             Scew scew;
-            return this.Deskew(DefaultBinarySearchReduction, out scew);
+            return this.Deskew( DefaultBinarySearchReduction, out scew );
         }
 
         /// <summary>
@@ -237,9 +237,8 @@ namespace Tesseract
         /// </remarks>
         /// <param name="scew">The scew angle and confidence</param>
         /// <returns>Returns deskewed image if confidence was high enough, otherwise returns clone of original pix.</returns>
-        public Pix Deskew(out Scew scew)
-        {
-            return this.Deskew(DefaultBinarySearchReduction, out scew);
+        public Pix Deskew( out Scew scew ) {
+            return this.Deskew( DefaultBinarySearchReduction, out scew );
         }
 
         /// <summary>
@@ -253,9 +252,8 @@ namespace Tesseract
         /// <param name="redSearch">The reduction factor used by the binary search, can be 1, 2, or 4.</param>
         /// <param name="scew">The scew angle and confidence</param>
         /// <returns>Returns deskewed image if confidence was high enough, otherwise returns clone of original pix.</returns>
-        public Pix Deskew(int redSearch, out Scew scew)
-        {
-            return this.Deskew(ScewSweep.Default, redSearch, DefaultBinaryThreshold, out scew);
+        public Pix Deskew( int redSearch, out Scew scew ) {
+            return this.Deskew( ScewSweep.Default, redSearch, DefaultBinaryThreshold, out scew );
         }
 
         /// <summary>
@@ -271,13 +269,13 @@ namespace Tesseract
         /// <param name="thresh">The threshold value used for binarizing the image.</param>
         /// <param name="scew">The scew angle and confidence</param>
         /// <returns>Returns deskewed image if confidence was high enough, otherwise returns clone of original pix.</returns>
-        public Pix Deskew(ScewSweep sweep, int redSearch, int thresh, out Scew scew)
-        {
+        public Pix Deskew( ScewSweep sweep, int redSearch, int thresh, out Scew scew ) {
             float pAngle, pConf;
-            var resultPixHandle = LeptonicaApi.Native.pixDeskewGeneral(this.handle, sweep.Reduction, sweep.Range, sweep.Delta, redSearch, thresh, out pAngle, out pConf);
-            if (resultPixHandle == IntPtr.Zero) throw new TesseractException("Failed to deskew image.");
-            scew = new Scew(pAngle, pConf);
-            return new Pix(resultPixHandle);
+            var resultPixHandle = LeptonicaApi.Native.pixDeskewGeneral( this.handle, sweep.Reduction, sweep.Range, sweep.Delta, redSearch, thresh, out pAngle, out pConf );
+            if ( resultPixHandle == IntPtr.Zero )
+                throw new TesseractException( "Failed to deskew image." );
+            scew = new Scew( pAngle, pConf );
+            return new Pix( resultPixHandle );
         }
 
         /// <summary>
@@ -289,12 +287,12 @@ namespace Tesseract
         /// <param name="smoothy"> smoothY Half-height of convolution kernel applied to threshold array: use 0 for no smoothing.</param>
         /// <param name="scorefract"> scoreFraction Fraction of the max Otsu score; typ. 0.1 (use 0.0 for standard Otsu).</param>
         /// <returns> ppixd is a pointer to the thresholded PIX image.</returns>
-        public Pix BinarizeOtsuAdaptiveThreshold(int sx, int sy, int smoothx, int smoothy, float scorefract)
-        {
+        public Pix BinarizeOtsuAdaptiveThreshold( int sx, int sy, int smoothx, int smoothy, float scorefract ) {
             IntPtr ppixth, ppixd;
-            var result = LeptonicaApi.Native.pixOtsuAdaptiveThreshold(this.handle, sx, sy, smoothx, smoothy, scorefract, out ppixth, out ppixd);
-            if (result == 1) throw new TesseractException("Failed to binarize image.");
-            return new Pix(ppixd);
+            var result = LeptonicaApi.Native.pixOtsuAdaptiveThreshold( this.handle, sx, sy, smoothx, smoothy, scorefract, out ppixth, out ppixd );
+            if ( result == 1 )
+                throw new TesseractException( "Failed to binarize image." );
+            return new Pix( ppixd );
         }
 
         /// <summary>
@@ -304,78 +302,78 @@ namespace Tesseract
         /// <param name="gwt">Green weight</param>
         /// <param name="bwt">Blue weight</param>
         /// <returns></returns>
-        public Pix ConvertRGBToGray(float rwt, float gwt, float bwt)
-        {
-            var resultPixHandle = LeptonicaApi.Native.pixConvertRGBToGray(this.handle, rwt, gwt, bwt);
-            if (resultPixHandle == IntPtr.Zero) throw new TesseractException("Failed to convert to grayscale.");
-            return new Pix(resultPixHandle);
+        public Pix ConvertRGBToGray( float rwt, float gwt, float bwt ) {
+            var resultPixHandle = LeptonicaApi.Native.pixConvertRGBToGray( this.handle, rwt, gwt, bwt );
+            if ( resultPixHandle == IntPtr.Zero )
+                throw new TesseractException( "Failed to convert to grayscale." );
+            return new Pix( resultPixHandle );
         }
-        
-		/// <summary>
-		/// Creates a new image by rotating this image about it's centre.
-		/// </summary>
-		/// <remarks>
-		/// Please note the following:
-		/// <list type="bullet">
-		/// <item>
-		/// Rotation will bring in either white or black pixels, as specified by <paramref name="fillColor" /> from
-		/// the outside as required.
-		/// </item>
-		/// <item>Above 20 degrees, sampling rotation will be used if shear was requested.</item>
-		/// <item>Colormaps are removed for rotation by area map and shear.</item>
-		/// <item>
-		/// The resulting image can be expanded so that no image pixels are lost. To invoke expansion,
-		/// input the original width and height. For repeated rotation, use of the original width and heigh allows
-		/// expansion to stop at the maximum required size which is a square of side = sqrt(w*w + h*h).
-		/// </item>
-		/// </list>
-		/// <para>
-		/// Please note there is an implicit assumption about RGB component ordering.
-		/// </para>
-		/// </remarks>
-		/// <param name="angle">The angle to rotate by, in radians; clockwise is positive.</param>
-		/// <param name="method">The rotation method to use.</param>
-		/// <param name="fillColor">The fill color to use for pixels that are brought in from the outside.</param>
-		/// <param name="width">The original width; use 0 to avoid embedding</param>
-		/// <param name="height">The original height; use 0 to avoid embedding</param>
-		/// <returns>The image rotated around it's centre.</returns>
-		public Pix Rotate(float angle, RotationMethod method = RotationMethod.AreaMap, RotationFill fillColor = RotationFill.White, int? width = null, int? height = null)
-		{			
-			if(width == null) width = this.Width;
-			if(height == null) height = this.Height;
-			
-			if(Math.Abs(angle) < VerySmallAngle) return this.Clone();
-			
-			IntPtr resultHandle;
-			
-			var rotations = 2 * angle / Math.PI;
-			if(Math.Abs(rotations - Math.Floor(rotations)) < VerySmallAngle) {
-				// handle special case of orthoganal rotations (90, 180, 270)
-                resultHandle = LeptonicaApi.Native.pixRotateOrth(this.handle, (int)rotations);
-			} else {
-				// handle general case			
-                resultHandle = LeptonicaApi.Native.pixRotate(this.handle, angle, method, fillColor, width.Value, height.Value);
-			}
-			
-			if(resultHandle == IntPtr.Zero) throw new LeptonicaException("Failed to rotate image around it's centre.");
-			
-			return new Pix(resultHandle);
-		}
-		
-        #endregion
-        
-        #region Disposal
-        
-        
-        protected override void Dispose(bool disposing)
-        {
-        	var tmpHandle = this.handle.Handle;
-            LeptonicaApi.Native.pixDestroy(ref tmpHandle);
-            this.handle = new HandleRef(this, IntPtr.Zero);
-        }
-        
-        #endregion
-        
 
+        /// <summary>
+        /// Creates a new image by rotating this image about it's centre.
+        /// </summary>
+        /// <remarks>
+        /// Please note the following:
+        /// <list type="bullet">
+        /// <item>
+        /// Rotation will bring in either white or black pixels, as specified by <paramref name="fillColor" /> from
+        /// the outside as required.
+        /// </item>
+        /// <item>Above 20 degrees, sampling rotation will be used if shear was requested.</item>
+        /// <item>Colormaps are removed for rotation by area map and shear.</item>
+        /// <item>
+        /// The resulting image can be expanded so that no image pixels are lost. To invoke expansion,
+        /// input the original width and height. For repeated rotation, use of the original width and heigh allows
+        /// expansion to stop at the maximum required size which is a square of side = sqrt(w*w + h*h).
+        /// </item>
+        /// </list>
+        /// <para>
+        /// Please note there is an implicit assumption about RGB component ordering.
+        /// </para>
+        /// </remarks>
+        /// <param name="angle">The angle to rotate by, in radians; clockwise is positive.</param>
+        /// <param name="method">The rotation method to use.</param>
+        /// <param name="fillColor">The fill color to use for pixels that are brought in from the outside.</param>
+        /// <param name="width">The original width; use 0 to avoid embedding</param>
+        /// <param name="height">The original height; use 0 to avoid embedding</param>
+        /// <returns>The image rotated around it's centre.</returns>
+        public Pix Rotate( float angle, RotationMethod method = RotationMethod.AreaMap, RotationFill fillColor = RotationFill.White, int? width = null, int? height = null ) {
+            if ( width == null )
+                width = this.Width;
+            if ( height == null )
+                height = this.Height;
+
+            if ( Math.Abs( angle ) < VerySmallAngle )
+                return this.Clone();
+
+            IntPtr resultHandle;
+
+            var rotations = 2 * angle / Math.PI;
+            if ( Math.Abs( rotations - Math.Floor( rotations ) ) < VerySmallAngle ) {
+                // handle special case of orthoganal rotations (90, 180, 270)
+                resultHandle = LeptonicaApi.Native.pixRotateOrth( this.handle, ( int )rotations );
+            }
+            else {
+                // handle general case
+                resultHandle = LeptonicaApi.Native.pixRotate( this.handle, angle, method, fillColor, width.Value, height.Value );
+            }
+
+            if ( resultHandle == IntPtr.Zero )
+                throw new LeptonicaException( "Failed to rotate image around it's centre." );
+
+            return new Pix( resultHandle );
+        }
+
+        #endregion Image manipulation
+
+        #region Disposal
+
+        protected override void Dispose( bool disposing ) {
+            var tmpHandle = this.handle.Handle;
+            LeptonicaApi.Native.pixDestroy( ref tmpHandle );
+            this.handle = new HandleRef( this, IntPtr.Zero );
+        }
+
+        #endregion Disposal
     }
 }

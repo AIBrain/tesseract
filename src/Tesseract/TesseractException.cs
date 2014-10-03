@@ -1,29 +1,27 @@
-﻿
-using System;
+﻿using System;
 using System.Runtime.Serialization;
 
-namespace Tesseract
-{
-	/// <summary>
-	/// Desctiption of TesseractException.
-	/// </summary>
-	public class TesseractException : Exception
-	{
-		public TesseractException()
-		{
-		}
+namespace Tesseract {
 
-	 	public TesseractException(string message) : base(message)
-		{
-		}
+    /// <summary>
+    /// Desctiption of TesseractException.
+    /// </summary>
+    public class TesseractException : Exception {
 
-		public TesseractException(string message, Exception innerException) : base(message, innerException)
-		{
-		}
+        public TesseractException() {
+        }
 
-		// This constructor is needed for serialization.
-		protected TesseractException(SerializationInfo info, StreamingContext context) : base(info, context)
-		{
-		}
-	}
+        public TesseractException( string message )
+            : base( message ) {
+        }
+
+        public TesseractException( string message, Exception innerException )
+            : base( message, innerException ) {
+        }
+
+        // This constructor is needed for serialization.
+        protected TesseractException( SerializationInfo info, StreamingContext context )
+            : base( info, context ) {
+        }
+    }
 }

@@ -1,7 +1,6 @@
-﻿namespace Tesseract
-{
-    public enum ImageFormat : int
-    {
+﻿namespace Tesseract {
+
+    public enum ImageFormat : int {
         Unknown = 0,
         Bmp = 1,
         JfifJpeg = 2,
@@ -11,7 +10,7 @@
         TiffRle = 6,
         TiffG3 = 7,
         TiffG4 = 8,
-        TiffLzw =  9,
+        TiffLzw = 9,
         TifZip = 10,
         Pnm = 11,
         Ps = 12,

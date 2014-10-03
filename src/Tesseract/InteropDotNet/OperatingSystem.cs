@@ -1,6 +1,6 @@
 ﻿namespace Tesseract.InteropDotNet {
-    enum OperatingSystem
-    {
+
+    internal enum OperatingSystem {
         Windows,
         Unix,
         MacOSX,

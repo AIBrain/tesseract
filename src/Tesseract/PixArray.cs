@@ -1,25 +1,28 @@
 ﻿#region License & Information
+
 // This notice must be kept visible in the source.
-// 
+//
 // This section of source code belongs to Rick@AIBrain.Org unless otherwise specified,
 // or the original license has been overwritten by the automatic formatting of this code.
 // Any unmodified sections of source code borrowed from other projects retain their original license and thanks goes to the Authors.
-// 
+//
 // Donations and Royalties can be paid via
 // PayPal: paypal@aibrain.org
 // bitcoin:1Mad8TxTqxKnMiHuZxArFvX8BuFEB9nqX2
 // bitcoin:1NzEsF7eegeEWDr5Vr9sSSgtUC4aL6axJu
 // litecoin:LeUxdU2w3o6pLZGVys5xpDZvvo8DUrjBp9
-// 
+//
 // Usage of the source code or compiled binaries is AS-IS.
 // I am not responsible for Anything You Do.
-// 
+//
 // Contact me by email if you have any questions or helpful criticism.
-// 
+//
 // "Tesseract/PixArray.cs" was last cleaned by Rick on 2014/09/22 at 4:55 PM
-#endregion
+
+#endregion License & Information
 
 namespace Tesseract {
+
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -31,8 +34,10 @@ namespace Tesseract {
     /// <summary>
     ///     Represents an array of <see cref="Pix" />.
     /// </summary>
-    public class PixArray : DisposableBase, IEnumerable< Pix > {
+    public class PixArray : DisposableBase, IEnumerable<Pix> {
+
         #region Static Constructors
+
         /// <summary>
         ///     Loads the multi-page tiff located at <paramref name="filename" />.
         /// </summary>
@@ -46,32 +51,40 @@ namespace Tesseract {
 
             return new PixArray( pixaHandle );
         }
-        #endregion
+
+        #endregion Static Constructors
 
         #region Enumerator implementation
+
         /// <summary>
         ///     Handles enumerating through the <see cref="Pix" /> in the PixArray.
         /// </summary>
-        private class PixArrayEnumerator : DisposableBase, IEnumerator< Pix > {
+        private class PixArrayEnumerator : DisposableBase, IEnumerator<Pix> {
+
             #region Fields
+
             private readonly PixArray array;
             private readonly Pix[] items;
             private readonly int version;
             private Pix current;
             private int index;
-            #endregion
+
+            #endregion Fields
 
             #region Constructor
+
             public PixArrayEnumerator( PixArray array ) {
                 this.array = array;
                 this.version = array.version;
-                this.items = new Pix[array.Count];
+                this.items = new Pix[ array.Count ];
                 this.index = 0;
                 this.current = null;
             }
-            #endregion
+
+            #endregion Constructor
 
             #region Enumerator Implementation
+
             /// <inheritdoc />
             public bool MoveNext() {
                 this.VerifyArrayUnchanged();
@@ -131,12 +144,14 @@ namespace Tesseract {
                     throw new InvalidOperationException( "PixArray was modified; enumeration operation may not execute." );
                 }
             }
-            #endregion
+
+            #endregion Enumerator Implementation
 
             #region Disposal
+
             protected override void Dispose( bool disposing ) {
                 if ( disposing ) {
-                    for ( var i = 0; i < this.items.Length; i++ ) {
+                    for ( var i = 0 ; i < this.items.Length ; i++ ) {
                         if ( this.items[ i ] != null ) {
                             this.items[ i ].Dispose();
                             this.items[ i ] = null;
@@ -144,11 +159,14 @@ namespace Tesseract {
                     }
                 }
             }
-            #endregion
+
+            #endregion Disposal
         }
-        #endregion
+
+        #endregion Enumerator implementation
 
         #region Fields
+
         private readonly int _count;
         private readonly int version;
 
@@ -156,9 +174,11 @@ namespace Tesseract {
         ///     Gets the handle to the underlying PixA structure.
         /// </summary>
         private HandleRef _handle;
-        #endregion
+
+        #endregion Fields
 
         #region Constructor
+
         private PixArray( IntPtr handle ) {
             this._handle = new HandleRef( this, handle );
             this.version = 1;
@@ -166,9 +186,11 @@ namespace Tesseract {
             // These will need to be updated whenever the PixA structure changes (i.e. a Pix is added or removed) though at the moment that isn't a problem.
             this._count = LeptonicaApi.Native.pixaGetCount( this._handle );
         }
-        #endregion
+
+        #endregion Constructor
 
         #region Properties
+
         /// <summary>
         ///     Gets the number of <see cref="Pix" /> contained in the array.
         /// </summary>
@@ -178,9 +200,11 @@ namespace Tesseract {
                 return this._count;
             }
         }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         ///     Returns a <see cref="IEnumerator{Pix}" /> that iterates the the array of <see cref="Pix" />.
         /// </summary>
@@ -195,7 +219,7 @@ namespace Tesseract {
         ///     <see cref="Pix.Clone()" />.
         /// </remarks>
         /// <returns>A <see cref="IEnumerator{Pix}" /> that iterates the the array of <see cref="Pix" />.</returns>
-        public IEnumerator< Pix > GetEnumerator() {
+        public IEnumerator<Pix> GetEnumerator() {
             return new PixArrayEnumerator( this );
         }
 
@@ -231,6 +255,7 @@ namespace Tesseract {
             LeptonicaApi.Native.pixaDestroy( ref handle );
             this._handle = new HandleRef( this, handle );
         }
-        #endregion
+
+        #endregion Methods
     }
 }
