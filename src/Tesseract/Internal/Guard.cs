@@ -48,7 +48,7 @@ namespace Tesseract.Internal {
         [DebuggerHidden]
         public static void RequireNotNull( string argName, object value ) {
             if ( value == null ) {
-                throw new ArgumentException( String.Format( "Argument \"{0}\" must not be null.", value ) );
+                throw new ArgumentException( String.Format( "Argument value must not be null." ) );
             }
         }
 

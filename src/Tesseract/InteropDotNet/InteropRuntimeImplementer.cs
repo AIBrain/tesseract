@@ -6,6 +6,7 @@ namespace Tesseract.InteropDotNet {
 
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
     using System.Runtime.InteropServices;
@@ -354,10 +355,9 @@ namespace Tesseract.InteropDotNet {
 
         private static LightParameterInfo[] GetParameterInfoArray( MethodInfo methodInfo, InfoArrayMode mode = InfoArrayMode.Invoke ) {
             var parameters = methodInfo.GetParameters();
-            var infoList = new List<LightParameterInfo>();
-            for ( var i = 0 ; i < parameters.Length ; i++ )
-                if ( mode != InfoArrayMode.EndInvoke || parameters[ i ].ParameterType.IsByRef )
-                    infoList.Add( new LightParameterInfo( parameters[ i ] ) );
+            var infoList = ( from t in parameters
+                             where mode != InfoArrayMode.EndInvoke || t.ParameterType.IsByRef
+                             select new LightParameterInfo( t ) ).ToList();
             if ( mode == InfoArrayMode.BeginInvoke ) {
                 infoList.Add( new LightParameterInfo( typeof( AsyncCallback ), "callback" ) );
                 infoList.Add( new LightParameterInfo( typeof( object ), "object" ) );

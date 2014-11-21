@@ -273,7 +273,7 @@ namespace Tesseract {
 
             this.processCount++;
 
-            TessApi.Native.BaseAPISetPageSegMode( this.handle, pageSegMode.HasValue ? pageSegMode.Value : this.DefaultPageSegMode );
+            TessApi.Native.BaseAPISetPageSegMode( this.handle, pageSegMode ?? this.DefaultPageSegMode );
             TessApi.Native.BaseApiSetImage( this.handle, image.Handle );
             if ( !String.IsNullOrEmpty( inputName ) ) {
                 TessApi.Native.BaseApiSetInputName( this.handle, inputName );

@@ -9,7 +9,7 @@ namespace Tesseract.InteropDotNet {
     using System.Globalization;
 
     internal static class LibraryLoaderTrace {
-        private const bool printToConsole = false;
+        private const bool printToConsole = true;
         private static readonly TraceSource trace = new TraceSource( "Tesseract" );
 
         private static void Print( string message ) {

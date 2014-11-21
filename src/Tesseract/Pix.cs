@@ -8,9 +8,6 @@ namespace Tesseract {
     using Interop;
 
     public sealed class Pix : DisposableBase {
-
-        #region Constants
-
         // Skew Defaults
         public const int DefaultBinarySearchReduction = 2; // binary search part
 
@@ -26,7 +23,7 @@ namespace Tesseract {
         /// <summary>
         /// Used to lookup image formats by extension.
         /// </summary>
-        private static readonly Dictionary<string, ImageFormat> imageFomatLookup = new Dictionary<string, ImageFormat>
+        private static readonly Dictionary<string, ImageFormat> ImageFomatLookup = new Dictionary<string, ImageFormat>
     		{
     			{ ".jpg", ImageFormat.JfifJpeg },
     			{ ".jpeg", ImageFormat.JfifJpeg },
@@ -37,17 +34,11 @@ namespace Tesseract {
     			{ ".bmp", ImageFormat.Bmp }
     		};
 
-        #endregion Constants
-
-        #region Fields
-
         private HandleRef handle;
         private PixColormap colormap;
         private readonly int width;
         private readonly int height;
         private readonly int depth;
-
-        #endregion Fields
 
         #region Create\Load methods
 
@@ -168,7 +159,7 @@ namespace Tesseract {
             if ( !format.HasValue ) {
                 // ReSharper disable once PossibleNullReferenceException
                 var extension = Path.GetExtension( filename ).ToLowerInvariant();
-                if ( !imageFomatLookup.TryGetValue( extension, out actualFormat ) ) {
+                if ( !ImageFomatLookup.TryGetValue( extension, out actualFormat ) ) {
                     // couldn't find matching format, perhaps there is no extension or it's not recognised, fallback to default.
                     actualFormat = ImageFormat.Default;
                 }
@@ -349,6 +340,7 @@ namespace Tesseract {
             IntPtr resultHandle;
 
             var rotations = 2 * angle / Math.PI;
+            // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
             if ( Math.Abs( rotations - Math.Floor( rotations ) ) < VerySmallAngle ) {
                 // handle special case of orthoganal rotations (90, 180, 270)
                 resultHandle = LeptonicaApi.Native.pixRotateOrth( this.handle, ( int )rotations );
