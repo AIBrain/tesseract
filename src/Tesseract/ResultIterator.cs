@@ -10,12 +10,8 @@ namespace Tesseract {
             : base( handle ) {
         }
 
-        public float GetConfidence( PageIteratorLevel level ) {
-            return TessApi.Native.ResultIteratorGetConfidence( this.handle, level );
-        }
+        public float GetConfidence( PageIteratorLevel level ) => TessApi.Native.ResultIteratorGetConfidence( this.handle, level );
 
-        public string GetText( PageIteratorLevel level ) {
-            return TessApi.ResultIteratorGetUTF8Text( this.handle, level );
-        }
+        public string GetText( PageIteratorLevel level ) => TessApi.ResultIteratorGetUTF8Text( this.handle, level );
     }
 }

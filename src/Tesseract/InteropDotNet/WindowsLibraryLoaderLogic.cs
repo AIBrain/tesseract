@@ -82,8 +82,6 @@ namespace Tesseract.InteropDotNet {
             SetLastError = true )]
         private static extern IntPtr WindowsGetProcAddress( IntPtr handle, string procedureName );
 
-        private static int WindowsGetLastError() {
-            return Marshal.GetLastWin32Error();
-        }
+        private static int WindowsGetLastError() => Marshal.GetLastWin32Error();
     }
 }

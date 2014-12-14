@@ -3,57 +3,35 @@
 namespace Tesseract {
 
     public struct Scew {
-        private readonly float angle;
-        private readonly float confidence;
-
         public Scew( float angle, float confidence ) {
-            this.angle = angle;
-            this.confidence = confidence;
+            this.Angle = angle;
+            this.Confidence = confidence;
         }
 
-        public float Angle {
-            get {
-                return this.angle;
-            }
-        }
+        public float Angle { get; }
 
-        public float Confidence {
-            get {
-                return this.confidence;
-            }
-        }
+        public float Confidence { get; }
 
-        public override string ToString() {
-            return String.Format( "Scew: {0} [conf: {1}]", this.Angle, this.Confidence );
-        }
+        public override string ToString() => String.Format( "Scew: {0} [conf: {1}]", this.Angle, this.Confidence );
 
         #region Equals and GetHashCode implementation
 
-        public override bool Equals( object obj ) {
-            return ( obj is Scew ) && this.Equals( ( Scew )obj );
-        }
+        public override bool Equals( object obj ) => ( obj is Scew ) && this.Equals( ( Scew )obj );
 
-        public bool Equals( Scew other ) {
-            return Math.Abs( this.confidence - other.confidence ) < float.Epsilon && Math.Abs( this.angle - other.angle ) < float.Epsilon;
-        }
+        public bool Equals( Scew other ) => Math.Abs( this.Confidence - other.Confidence ) < float.Epsilon && Math.Abs( this.Angle - other.Angle ) < float.Epsilon;
 
         public override int GetHashCode() {
             var hashCode = 0;
             unchecked {
-                hashCode += 1000000007 * this.angle.GetHashCode();
-                hashCode += 1000000009 * this.confidence.GetHashCode();
+                hashCode += 1000000007 * this.Angle.GetHashCode();
+                hashCode += 1000000009 * this.Confidence.GetHashCode();
             }
             return hashCode;
         }
 
-        public static bool operator ==( Scew lhs, Scew rhs ) {
-            return lhs.Equals( rhs );
-        }
+        public static bool operator ==( Scew lhs, Scew rhs ) => lhs.Equals( rhs );
 
-        public static bool operator !=( Scew lhs, Scew rhs ) {
-            return !( lhs == rhs );
-        }
-
+        public static bool operator !=( Scew lhs, Scew rhs ) => !( lhs == rhs );
         #endregion Equals and GetHashCode implementation
     }
 }

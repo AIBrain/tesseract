@@ -7,9 +7,7 @@ namespace Tesseract {
     public unsafe class PixData {
 
         public Pix Pix {
-            get;
-            private set;
-        }
+            get; }
 
         internal PixData( Pix pix ) {
             this.Pix = pix;
@@ -40,20 +38,16 @@ namespace Tesseract {
         /// This is required for little-endians in situations where we convert from a serialized byte order that is in raster order,
         /// as one typically has in file formats, to one with MSB-to-the-left in each 32-bit word, or v.v. See <seealso href="http://www.leptonica.com/byte-addressing.html"/>
         /// </remarks>
-        public void EndianByteSwap() {
-            LeptonicaApi.Native.pixEndianByteSwap( this.Pix.Handle );
-        }
+        public void EndianByteSwap() => LeptonicaApi.Native.pixEndianByteSwap( this.Pix.Handle );
 
 #if Net45
        	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
-        public static uint EncodeAsRGBA( byte red, byte green, byte blue, byte alpha ) {
-            return ( uint )( ( red << 24 ) |
-                ( green << 16 ) |
-                ( blue << 8 ) |
-                alpha );
-        }
+        public static uint EncodeAsRGBA( byte red, byte green, byte blue, byte alpha ) => ( uint )( ( red << 24 ) |
+                                                                                                    ( green << 16 ) |
+                                                                                                    ( blue << 8 ) |
+                                                                                                    alpha );
 
         /// <summary>
         /// Gets the pixel value for a 1bpp image.
@@ -62,9 +56,7 @@ namespace Tesseract {
       	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
-        public static uint GetDataBit( uint* data, int index ) {
-            return ( *( data + ( ( index ) >> 5 ) ) >> ( 31 - ( ( index ) & 31 ) ) ) & 1;
-        }
+        public static uint GetDataBit( uint* data, int index ) => ( *( data + ( ( index ) >> 5 ) ) >> ( 31 - ( ( index ) & 31 ) ) ) & 1;
 
         /// <summary>
         /// Sets the pixel value for a 1bpp image.
@@ -86,9 +78,7 @@ namespace Tesseract {
       	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
-        public static uint GetDataDIBit( uint* data, int index ) {
-            return ( *( data + ( ( index ) >> 4 ) ) >> ( 2 * ( 15 - ( ( index ) & 15 ) ) ) ) & 3;
-        }
+        public static uint GetDataDIBit( uint* data, int index ) => ( *( data + ( ( index ) >> 4 ) ) >> ( 2 * ( 15 - ( ( index ) & 15 ) ) ) ) & 3;
 
         /// <summary>
         /// Sets the pixel value for a 2bpp image.
@@ -110,9 +100,7 @@ namespace Tesseract {
       	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
-        public static uint GetDataQBit( uint* data, int index ) {
-            return ( *( data + ( ( index ) >> 3 ) ) >> ( 4 * ( 7 - ( ( index ) & 7 ) ) ) ) & 0xf;
-        }
+        public static uint GetDataQBit( uint* data, int index ) => ( *( data + ( ( index ) >> 3 ) ) >> ( 4 * ( 7 - ( ( index ) & 7 ) ) ) ) & 0xf;
 
         /// <summary>
         /// Sets the pixel value for a 4bpp image.
@@ -207,9 +195,7 @@ namespace Tesseract {
       	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
-        public static uint GetDataFourByte( uint* data, int index ) {
-            return *( data + index );
-        }
+        public static uint GetDataFourByte( uint* data, int index ) => *( data + index );
 
         /// <summary>
         /// Sets the pixel value for a 32bpp image.

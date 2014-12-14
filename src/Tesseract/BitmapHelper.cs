@@ -58,9 +58,7 @@ namespace Tesseract {
        	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
-        public static byte GetDataBit( byte* data, int index ) {
-            return ( byte )( ( *( data + ( index >> 3 ) ) >> ( index & 0x7 ) ) & 1 );
-        }
+        public static byte GetDataBit( byte* data, int index ) => ( byte )( ( *( data + ( index >> 3 ) ) >> ( index & 0x7 ) ) & 1 );
 
 #if Net45
        	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -76,9 +74,7 @@ namespace Tesseract {
        	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
-        public static byte GetDataQBit( byte* data, int index ) {
-            return ( byte )( ( *( data + ( index >> 1 ) ) >> ( 4 * ( index & 1 ) ) ) & 0xF );
-        }
+        public static byte GetDataQBit( byte* data, int index ) => ( byte )( ( *( data + ( index >> 1 ) ) >> ( 4 * ( index & 1 ) ) ) & 0xF );
 
 #if Net45
        	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -94,9 +90,7 @@ namespace Tesseract {
        	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
-        public static byte GetDataByte( byte* data, int index ) {
-            return *( data + index );
-        }
+        public static byte GetDataByte( byte* data, int index ) => *( data + index );
 
 #if Net45
        	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -110,9 +104,7 @@ namespace Tesseract {
        	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
-        public static ushort GetDataUInt16( ushort* data, int index ) {
-            return *( data + index );
-        }
+        public static ushort GetDataUInt16( ushort* data, int index ) => *( data + index );
 
 #if Net45
        	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -126,9 +118,7 @@ namespace Tesseract {
        	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
-        public static uint GetDataUInt32( uint* data, int index ) {
-            return *( data + index );
-        }
+        public static uint GetDataUInt32( uint* data, int index ) => *( data + index );
 
 #if Net45
        	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -192,13 +182,10 @@ namespace Tesseract {
        	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
-        public static uint EncodeAsRGBA( byte red, byte green, byte blue, byte alpha ) {
-            return ( uint )( ( red << 24 ) |
-                ( green << 16 ) |
-                ( blue << 8 ) |
-                alpha );
-        }
-
+        public static uint EncodeAsRGBA( byte red, byte green, byte blue, byte alpha ) => ( uint )( ( red << 24 ) |
+                                                                                                    ( green << 16 ) |
+                                                                                                    ( blue << 8 ) |
+                                                                                                    alpha );
         #endregion PixelFormat conversion
     }
 }

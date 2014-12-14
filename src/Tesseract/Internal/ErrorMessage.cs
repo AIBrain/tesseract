@@ -12,8 +12,6 @@ namespace Tesseract.Internal {
             return String.Format( ErrorMessageFormat, errorMessage, errorPageUrl );
         }
 
-        public static string ErrorPageUrl( int errorNumber ) {
-            return String.Format( WikiUrlFormat, errorNumber );
-        }
+        public static string ErrorPageUrl( int errorNumber ) => String.Format( WikiUrlFormat, errorNumber );
     }
 }

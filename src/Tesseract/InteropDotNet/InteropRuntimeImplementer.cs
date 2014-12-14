@@ -332,19 +332,13 @@ namespace Tesseract.InteropDotNet {
             }
 
             public Type Type {
-                get;
-                private set;
-            }
+                get; }
 
             public string Name {
-                get;
-                private set;
-            }
+                get; }
 
             public ParameterAttributes Attributes {
-                get;
-                private set;
-            }
+                get; }
         }
 
         private enum InfoArrayMode {
@@ -381,13 +375,9 @@ namespace Tesseract.InteropDotNet {
 
         #region Name helpers
 
-        private static string GetAssemblyName( Type interfaceType ) {
-            return string.Format( "InteropRuntimeImplementer.{0}Instance", GetSubstantialName( interfaceType ) );
-        }
+        private static string GetAssemblyName( Type interfaceType ) => string.Format( "InteropRuntimeImplementer.{0}Instance", GetSubstantialName( interfaceType ) );
 
-        private static string GetImplementationTypeName( string assemblyName, Type interfaceType ) {
-            return string.Format( "{0}.{1}Implementation", assemblyName, GetSubstantialName( interfaceType ) );
-        }
+        private static string GetImplementationTypeName( string assemblyName, Type interfaceType ) => string.Format( "{0}.{1}Implementation", assemblyName, GetSubstantialName( interfaceType ) );
 
         private static string GetSubstantialName( Type interfaceType ) {
             var name = interfaceType.Name;
@@ -396,10 +386,7 @@ namespace Tesseract.InteropDotNet {
             return name;
         }
 
-        private static string GetDelegateName( string assemblyName, MethodInfo methodInfo ) {
-            return string.Format( "{0}.{1}Delegate", assemblyName, methodInfo.Name );
-        }
-
+        private static string GetDelegateName( string assemblyName, MethodInfo methodInfo ) => string.Format( "{0}.{1}Delegate", assemblyName, methodInfo.Name );
         #endregion Name helpers
     }
 }

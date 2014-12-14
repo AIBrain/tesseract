@@ -10,14 +10,10 @@ namespace Tesseract {
         private Rect regionOfInterest;
 
         public TesseractEngine Engine {
-            get;
-            private set;
-        }
+            get; }
 
         public Pix Image {
-            get;
-            private set;
-        }
+            get; }
 
         internal Page( TesseractEngine engine, Pix image, Rect regionOfInterest ) {
             this.Engine = engine;

@@ -76,9 +76,7 @@ namespace Tesseract.InteropDotNet {
             }
         }
 
-        public IntPtr GetProcAddress( IntPtr dllHandle, string name ) {
-            return this.logic.GetProcAddress( dllHandle, name );
-        }
+        public IntPtr GetProcAddress( IntPtr dllHandle, string name ) => this.logic.GetProcAddress( dllHandle, name );
 
         public bool IsLibraryLoaded( string fileName ) {
             fileName = this.FixUpLibraryName( fileName );
@@ -86,9 +84,7 @@ namespace Tesseract.InteropDotNet {
                 return this.loadedAssemblies.ContainsKey( fileName );
         }
 
-        private string FixUpLibraryName( string fileName ) {
-            return this.logic.FixUpLibraryName( fileName );
-        }
+        private string FixUpLibraryName( string fileName ) => this.logic.FixUpLibraryName( fileName );
 
         #region Singleton
 

@@ -11,43 +11,25 @@
         public const int DefaultReduction = 4; // Sweep part; 4 is good
         public const float DefaultRange = 7.0F;
         public const float DefaultDelta = 1.0F;
-
-        private int reduction;
-        private float range;
-        private float delta;
-
         #endregion Constants and Fields
 
         #region Factory Methods + Constructor
 
         public ScewSweep( int reduction = DefaultReduction, float range = DefaultRange, float delta = DefaultDelta ) {
-            this.reduction = reduction;
-            this.range = range;
-            this.delta = delta;
+            this.Reduction = reduction;
+            this.Range = range;
+            this.Delta = delta;
         }
 
         #endregion Factory Methods + Constructor
 
         #region Properties
 
-        public int Reduction {
-            get {
-                return this.reduction;
-            }
-        }
+        public int Reduction { get; }
 
-        public float Range {
-            get {
-                return this.range;
-            }
-        }
+        public float Range { get; }
 
-        public float Delta {
-            get {
-                return this.delta;
-            }
-        }
-
+        public float Delta { get; }
         #endregion Properties
     }
 }

@@ -8,9 +8,7 @@ namespace Tesseract.InteropDotNet {
 
     internal static class SystemManager {
 
-        public static string GetPlatformName() {
-            return IntPtr.Size == sizeof( int ) ? "x86" : "x64";
-        }
+        public static string GetPlatformName() => IntPtr.Size == sizeof( int ) ? "x86" : "x64";
 
         public static OperatingSystem GetOperatingSystem() {
             var pid = ( int )Environment.OSVersion.Platform;

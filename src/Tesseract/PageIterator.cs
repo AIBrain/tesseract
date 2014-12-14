@@ -22,9 +22,7 @@ namespace Tesseract {
         /// <summary>
         /// Moves the iterator to the start of the page.
         /// </summary>
-        public void Begin() {
-            TessApi.Native.PageIteratorBegin( this.handle );
-        }
+        public void Begin() => TessApi.Native.PageIteratorBegin( this.handle );
 
         /// <summary>
         /// Moves to the start of the next element at the given level.
@@ -34,9 +32,7 @@ namespace Tesseract {
         /// </remarks>
         /// <param name="level"></param>
         /// <returns></returns>
-        public bool Next( PageIteratorLevel level ) {
-            return TessApi.Native.PageIteratorNext( this.handle, level ) != 0;
-        }
+        public bool Next( PageIteratorLevel level ) => TessApi.Native.PageIteratorNext( this.handle, level ) != 0;
 
         /// <summary>
         /// Moves the iterator to the next <paramref name="element"/> iff the iterator is not currently pointing to the last <paramref name="element"/> in the specified <paramref name="level"/> (i.e. the last word in the paragraph).
@@ -60,9 +56,7 @@ namespace Tesseract {
         /// </remarks>
         /// <param name="level"></param>
         /// <returns></returns>
-        public bool IsAtBeginningOf( PageIteratorLevel level ) {
-            return TessApi.Native.PageIteratorIsAtBeginningOf( this.handle, level ) != 0;
-        }
+        public bool IsAtBeginningOf( PageIteratorLevel level ) => TessApi.Native.PageIteratorIsAtBeginningOf( this.handle, level ) != 0;
 
         /// <summary>
         /// Returns <c>True</c> if the iterator is possitioned at the last element at the given level.
@@ -70,9 +64,7 @@ namespace Tesseract {
         /// <param name="level"></param>
         /// <param name="element"></param>
         /// <returns></returns>
-        public bool IsAtFinalOf( PageIteratorLevel level, PageIteratorLevel element ) {
-            return TessApi.Native.PageIteratorIsAtFinalElement( this.handle, level, element ) != 0;
-        }
+        public bool IsAtFinalOf( PageIteratorLevel level, PageIteratorLevel element ) => TessApi.Native.PageIteratorIsAtFinalElement( this.handle, level, element ) != 0;
 
         public PolyBlockType BlockType {
             get {
@@ -80,13 +72,9 @@ namespace Tesseract {
             }
         }
 
-        public Pix GetBinaryImage( PageIteratorLevel level ) {
-            return Pix.Create( TessApi.Native.PageIteratorGetBinaryImage( this.handle, level ) );
-        }
+        public Pix GetBinaryImage( PageIteratorLevel level ) => Pix.Create( TessApi.Native.PageIteratorGetBinaryImage( this.handle, level ) );
 
-        public Pix GetImage( PageIteratorLevel level, int padding, out int x, out int y ) {
-            return Pix.Create( TessApi.Native.PageIteratorGetImage( this.handle, level, padding, out x, out y ) );
-        }
+        public Pix GetImage( PageIteratorLevel level, int padding, out int x, out int y ) => Pix.Create( TessApi.Native.PageIteratorGetImage( this.handle, level, padding, out x, out y ) );
 
         /// <summary>
         /// Gets the bounding rectangle of the current element at the given level.
@@ -136,8 +124,6 @@ namespace Tesseract {
             return new ElementProperties( orientation, textLineOrder, writing_direction, deskew_angle );
         }
 
-        protected override void Dispose( bool disposing ) {
-            TessApi.Native.PageIteratorDelete( this.handle );
-        }
+        protected override void Dispose( bool disposing ) => TessApi.Native.PageIteratorDelete( this.handle );
     }
 }

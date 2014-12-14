@@ -6,106 +6,68 @@ namespace Tesseract {
         public static readonly Rect Empty = new Rect();
 
         #region Fields
-
-        private readonly int x;
-        private readonly int y;
-        private readonly int width;
-        private readonly int height;
-
         #endregion Fields
 
         #region Constructors + Factory Methods
 
         public Rect( int x, int y, int width, int height ) {
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
+            this.X1 = x;
+            this.Y1 = y;
+            this.Width = width;
+            this.Height = height;
         }
 
-        public static Rect FromCoords( int x1, int y1, int x2, int y2 ) {
-            return new Rect( x1, y1, x2 - x1, y2 - y1 );
-        }
-
+        public static Rect FromCoords( int x1, int y1, int x2, int y2 ) => new Rect( x1, y1, x2 - x1, y2 - y1 );
         #endregion Constructors + Factory Methods
 
         #region Properties
 
-        public int X1 {
-            get {
-                return this.x;
-            }
-        }
+        public int X1 { get; }
 
-        public int Y1 {
-            get {
-                return this.y;
-            }
-        }
+        public int Y1 { get; }
 
         public int X2 {
             get {
-                return this.x + this.width;
+                return this.X1 + this.Width;
             }
         }
 
         public int Y2 {
             get {
-                return this.y + this.height;
+                return this.Y1 + this.Height;
             }
         }
 
-        public int Width {
-            get {
-                return this.width;
-            }
-        }
+        public int Width { get; }
 
-        public int Height {
-            get {
-                return this.height;
-            }
-        }
-
+        public int Height { get; }
         #endregion Properties
 
         #region Equals and GetHashCode implementation
 
-        public override bool Equals( object obj ) {
-            return ( obj is Rect ) && this.Equals( ( Rect )obj );
-        }
+        public override bool Equals( object obj ) => ( obj is Rect ) && this.Equals( ( Rect )obj );
 
-        public bool Equals( Rect other ) {
-            return this.x == other.x && this.y == other.y && this.width == other.width && this.height == other.height;
-        }
+        public bool Equals( Rect other ) => this.X1 == other.X1 && this.Y1 == other.Y1 && this.Width == other.Width && this.Height == other.Height;
 
         public override int GetHashCode() {
             var hashCode = 0;
             unchecked {
-                hashCode += 1000000007 * this.x.GetHashCode();
-                hashCode += 1000000009 * this.y.GetHashCode();
-                hashCode += 1000000021 * this.width.GetHashCode();
-                hashCode += 1000000033 * this.height.GetHashCode();
+                hashCode += 1000000007 * this.X1.GetHashCode();
+                hashCode += 1000000009 * this.Y1.GetHashCode();
+                hashCode += 1000000021 * this.Width.GetHashCode();
+                hashCode += 1000000033 * this.Height.GetHashCode();
             }
             return hashCode;
         }
 
-        public static bool operator ==( Rect lhs, Rect rhs ) {
-            return lhs.Equals( rhs );
-        }
+        public static bool operator ==( Rect lhs, Rect rhs ) => lhs.Equals( rhs );
 
-        public static bool operator !=( Rect lhs, Rect rhs ) {
-            return !( lhs == rhs );
-        }
-
+        public static bool operator !=( Rect lhs, Rect rhs ) => !( lhs == rhs );
         #endregion Equals and GetHashCode implementation
 
         #region ToString
 
-        public override string ToString() {
-            return string.Format( "[Rect X={0}, Y={1}, Width={2}, Height={3}]", this.x, this.y, this.width, this.height );
-        }
-
+        public override string ToString() => string.Format( "[Rect X={0}, Y={1}, Width={2}, Height={3}]", this.X1, this.Y1, this.Width, this.Height );
         #endregion ToString
     }
 }
