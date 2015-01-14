@@ -2,12 +2,14 @@
 
 namespace Tesseract {
 
+    using System.Runtime.CompilerServices;
     using Interop;
 
     public unsafe class PixData {
 
         public Pix Pix {
-            get; }
+            get;
+        }
 
         internal PixData( Pix pix ) {
             this.Pix = pix;
@@ -32,16 +34,19 @@ namespace Tesseract {
         }
 
         /// <summary>
-        /// Swaps the bytes on little-endian platforms within a word; bytes 0 and 3 swapped, and bytes `1 and 2 are swapped.
+        /// Swaps the bytes on little-endian platforms within a word; bytes 0 and 3 swapped, and
+        /// bytes `1 and 2 are swapped.
         /// </summary>
         /// <remarks>
-        /// This is required for little-endians in situations where we convert from a serialized byte order that is in raster order,
-        /// as one typically has in file formats, to one with MSB-to-the-left in each 32-bit word, or v.v. See <seealso href="http://www.leptonica.com/byte-addressing.html"/>
+        /// This is required for little-endians in situations where we convert from a serialized
+        /// byte order that is in raster order, as one typically has in file formats, to one with
+        /// MSB-to-the-left in each 32-bit word, or v.v. See <seealso href="http://www.leptonica.com/byte-addressing.html"/>
         /// </remarks>
         public void EndianByteSwap() => LeptonicaApi.Native.pixEndianByteSwap( this.Pix.Handle );
 
 #if Net45
-       	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
         public static uint EncodeAsRGBA( byte red, byte green, byte blue, byte alpha ) => ( uint )( ( red << 24 ) |
@@ -53,7 +58,8 @@ namespace Tesseract {
         /// Gets the pixel value for a 1bpp image.
         /// </summary>
 #if Net45
-      	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
         public static uint GetDataBit( uint* data, int index ) => ( *( data + ( ( index ) >> 5 ) ) >> ( 31 - ( ( index ) & 31 ) ) ) & 1;
@@ -62,7 +68,8 @@ namespace Tesseract {
         /// Sets the pixel value for a 1bpp image.
         /// </summary>
 #if Net45
-      	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
         public static void SetDataBit( uint* data, int index, uint value ) {
@@ -75,7 +82,8 @@ namespace Tesseract {
         /// Gets the pixel value for a 2bpp image.
         /// </summary>
 #if Net45
-      	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
         public static uint GetDataDIBit( uint* data, int index ) => ( *( data + ( ( index ) >> 4 ) ) >> ( 2 * ( 15 - ( ( index ) & 15 ) ) ) ) & 3;
@@ -84,7 +92,8 @@ namespace Tesseract {
         /// Sets the pixel value for a 2bpp image.
         /// </summary>
 #if Net45
-      	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
         public static void SetDataDIBit( uint* data, int index, uint value ) {
@@ -97,7 +106,8 @@ namespace Tesseract {
         /// Gets the pixel value for a 4bpp image.
         /// </summary>
 #if Net45
-      	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
         public static uint GetDataQBit( uint* data, int index ) => ( *( data + ( ( index ) >> 3 ) ) >> ( 4 * ( 7 - ( ( index ) & 7 ) ) ) ) & 0xf;
@@ -106,7 +116,8 @@ namespace Tesseract {
         /// Sets the pixel value for a 4bpp image.
         /// </summary>
 #if Net45
-      	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
         public static void SetDataQBit( uint* data, int index, uint value ) {
@@ -119,15 +130,19 @@ namespace Tesseract {
         /// Gets the pixel value for a 8bpp image.
         /// </summary>
 #if Net45
-      	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
         public static uint GetDataByte( uint* data, int index ) {
-            // Must do direct size comparison to detect x64 process, since in this will be jited out and results in a lot faster code (e.g. 6x faster for image conversion)
+
+            // Must do direct size comparison to detect x64 process, since in this will be jited out
+            // and results in a lot faster code (e.g. 6x faster for image conversion)
             if ( IntPtr.Size == 8 ) {
                 return *( ( byte* )( ( ulong )( ( byte* )data + index ) ^ 3 ) );
             }
             return *( ( byte* )( ( uint )( ( byte* )data + index ) ^ 3 ) );
+
             // Architecture types that are NOT little edian are not currently supported
             //return *((byte*)data + index);
         }
@@ -136,11 +151,14 @@ namespace Tesseract {
         /// Sets the pixel value for a 8bpp image.
         /// </summary>
 #if Net45
-      	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
         public static void SetDataByte( uint* data, int index, uint value ) {
-            // Must do direct size comparison to detect x64 process, since in this will be jited out and results in a lot faster code (e.g. 6x faster for image conversion)
+
+            // Must do direct size comparison to detect x64 process, since in this will be jited out
+            // and results in a lot faster code (e.g. 6x faster for image conversion)
             if ( IntPtr.Size == 8 ) {
                 *( byte* )( ( ulong )( ( byte* )data + index ) ^ 3 ) = ( byte )value;
             }
@@ -149,41 +167,49 @@ namespace Tesseract {
             }
 
             // Architecture types that are NOT little edian are not currently supported
-            // *((byte*)data + index) =  (byte)value;
+            // * ((byte*)data + index) = (byte)value;
         }
 
         /// <summary>
         /// Gets the pixel value for a 16bpp image.
         /// </summary>
 #if Net45
-      	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
         public static uint GetDataTwoByte( uint* data, int index ) {
-            // Must do direct size comparison to detect x64 process, since in this will be jited out and results in a lot faster code (e.g. 6x faster for image conversion)
+
+            // Must do direct size comparison to detect x64 process, since in this will be jited out
+            // and results in a lot faster code (e.g. 6x faster for image conversion)
             if ( IntPtr.Size == 8 ) {
                 return *( ushort* )( ( ulong )( ( ushort* )data + index ) ^ 2 );
             }
             return *( ushort* )( ( uint )( ( ushort* )data + index ) ^ 2 );
-            // Architecture types that are NOT little edian are not currently supported
-            // return *((ushort*)data + index);
+
+            // Architecture types that are NOT little edian are not currently supported return
+            // *((ushort*)data + index);
         }
 
         /// <summary>
         /// Sets the pixel value for a 16bpp image.
         /// </summary>
 #if Net45
-      	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
         public static void SetDataTwoByte( uint* data, int index, uint value ) {
-            // Must do direct size comparison to detect x64 process, since in this will be jited out and results in a lot faster code (e.g. 6x faster for image conversion)
+
+            // Must do direct size comparison to detect x64 process, since in this will be jited out
+            // and results in a lot faster code (e.g. 6x faster for image conversion)
             if ( IntPtr.Size == 8 ) {
                 *( ushort* )( ( ulong )( ( ushort* )data + index ) ^ 2 ) = ( ushort )value;
             }
             else {
                 *( ushort* )( ( uint )( ( ushort* )data + index ) ^ 2 ) = ( ushort )value;
             }
+
             // Architecture types that are NOT little edian are not currently supported
             //*((ushort*)data + index) = (ushort)value;
         }
@@ -192,7 +218,8 @@ namespace Tesseract {
         /// Gets the pixel value for a 32bpp image.
         /// </summary>
 #if Net45
-      	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
         public static uint GetDataFourByte( uint* data, int index ) => *( data + index );
@@ -201,7 +228,8 @@ namespace Tesseract {
         /// Sets the pixel value for a 32bpp image.
         /// </summary>
 #if Net45
-      	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 
         public static void SetDataFourByte( uint* data, int index, uint value ) {

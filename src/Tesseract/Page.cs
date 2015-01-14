@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Tesseract {
 
+    using System.Runtime.CompilerServices;
     using Interop;
 
     public sealed class Page : DisposableBase {
@@ -10,10 +11,12 @@ namespace Tesseract {
         private Rect regionOfInterest;
 
         public TesseractEngine Engine {
-            get; }
+            get;
+        }
 
         public Pix Image {
-            get; }
+            get;
+        }
 
         internal Page( TesseractEngine engine, Pix image, Rect regionOfInterest ) {
             this.Engine = engine;
@@ -28,6 +31,7 @@ namespace Tesseract {
             get {
                 return this.regionOfInterest;
             }
+
             set {
                 if ( value.X1 < 0 || value.Y1 < 0 || value.X2 > this.Image.Width || value.Y2 > this.Image.Height )
                     throw new ArgumentException( "The region of interest to be processed must be within the image bounds.", "value" );
@@ -71,6 +75,7 @@ namespace Tesseract {
         }
 
 #if Net45
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 

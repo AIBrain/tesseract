@@ -15,29 +15,27 @@ namespace Tesseract {
             Trace.TraceEvent( TraceEventType.Warning, 0, "{0} was not disposed off.", this );
         }
 
-        public void Dispose() {
-            this.Dispose( true );
-
-            this.IsDisposed = true;
-            GC.SuppressFinalize( this );
-
-            if ( this.Disposed != null ) {
-                this.Disposed( this, EventArgs.Empty );
-            }
-        }
+        public event EventHandler<EventArgs> Disposed;
 
         public bool IsDisposed {
             get;
             private set;
         }
 
-        public event EventHandler<EventArgs> Disposed;
+        public void Dispose() {
+            this.Dispose( true );
+
+            this.IsDisposed = true;
+            GC.SuppressFinalize( this );
+
+            this.Disposed?.Invoke( this, EventArgs.Empty );
+        }
+
+        protected abstract void Dispose( bool disposing );
 
         protected virtual void VerifyNotDisposed() {
             if ( this.IsDisposed )
                 throw new ObjectDisposedException( this.ToString() );
         }
-
-        protected abstract void Dispose( bool disposing );
     }
 }
