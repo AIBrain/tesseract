@@ -246,9 +246,9 @@ namespace Tesseract {
         /// <returns>A result iterator</returns>
         public Page Process( Pix image, string inputName, Rect region, PageSegMode? pageSegMode = null ) {
             if ( image == null )
-                throw new ArgumentNullException( "image" );
+                throw new ArgumentNullException( nameof( image ) );
             if ( region.X1 < 0 || region.Y1 < 0 || region.X2 > image.Width || region.Y2 > image.Height )
-                throw new ArgumentException( "The image region to be processed must be within the image bounds.", "region" );
+                throw new ArgumentException( "The image region to be processed must be within the image bounds.", nameof( region ) );
             if ( this.processCount > 0 )
                 throw new InvalidOperationException( "Only one image can be processed at once. Please make sure you dispose of the page once your finished with it." );
 

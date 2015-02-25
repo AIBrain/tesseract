@@ -40,12 +40,12 @@ namespace Tesseract {
 
         public static Pix Create( int width, int height, int depth ) {
             if ( !AllowedDepths.Contains( depth ) )
-                throw new ArgumentException( "Depth must be 1, 2, 4, 8, 16, or 32 bits.", "depth" );
+                throw new ArgumentException( "Depth must be 1, 2, 4, 8, 16, or 32 bits.", nameof( depth ) );
 
             if ( width <= 0 )
-                throw new ArgumentException( "Width must be greater than zero", "width" );
+                throw new ArgumentException( "Width must be greater than zero", nameof( width ) );
             if ( height <= 0 )
-                throw new ArgumentException( "Height must be greater than zero", "height" );
+                throw new ArgumentException( "Height must be greater than zero", nameof( height ) );
 
             var handle = LeptonicaApi.Native.pixCreate( width, height, depth );
             if ( handle == IntPtr.Zero )
@@ -56,7 +56,7 @@ namespace Tesseract {
 
         public static Pix Create( IntPtr handle ) {
             if ( handle == IntPtr.Zero )
-                throw new ArgumentException( "Pix handle must not be zero (null).", "handle" );
+                throw new ArgumentException( "Pix handle must not be zero (null).", nameof( handle ) );
 
             return new Pix( handle );
         }
@@ -78,7 +78,7 @@ namespace Tesseract {
         /// <param name="handle"></param>
         private Pix( IntPtr handle ) {
             if ( handle == IntPtr.Zero )
-                throw new ArgumentNullException( "handle" );
+                throw new ArgumentNullException( nameof( handle ) );
 
             this.Handle = new HandleRef( this, handle );
             this.Width = LeptonicaApi.Native.pixGetWidth( this.Handle );

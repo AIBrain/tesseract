@@ -49,7 +49,7 @@ namespace Tesseract {
                     return 64;
 
                 default:
-                    throw new ArgumentException( String.Format( "The bitmap's pixel format of {0} was not recognised.", bitmap.PixelFormat ), "bitmap" );
+                    throw new ArgumentException( String.Format( "The bitmap's pixel format of {0} was not recognised.", bitmap.PixelFormat ), nameof( bitmap ) );
             }
         }
 

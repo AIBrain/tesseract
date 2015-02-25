@@ -34,7 +34,7 @@ namespace Tesseract {
 
             set {
                 if ( value.X1 < 0 || value.Y1 < 0 || value.X2 > this.Image.Width || value.Y2 > this.Image.Height )
-                    throw new ArgumentException( "The region of interest to be processed must be within the image bounds.", "value" );
+                    throw new ArgumentException( "The region of interest to be processed must be within the image bounds.", nameof( value ) );
 
                 if ( this.regionOfInterest != value ) {
                     this.regionOfInterest = value;
