@@ -169,10 +169,8 @@ namespace Tesseract.InteropDotNet {
 
             // Build list of library names
             var libraries = new List<string>();
-            foreach ( var method in methods ) {
-                var libraryName = method.DllImportAttribute.LibraryFileName;
-                if ( !libraries.Contains( libraryName ) )
-                    libraries.Add( libraryName );
+            foreach ( var libraryName in methods.Select( method => method.DllImportAttribute.LibraryFileName ).Where( libraryName => !libraries.Contains( libraryName ) ) ) {
+                libraries.Add( libraryName );
             }
 
             // Create ILGenerator

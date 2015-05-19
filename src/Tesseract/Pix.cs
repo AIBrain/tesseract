@@ -34,7 +34,7 @@ namespace Tesseract {
     			{ ".bmp", ImageFormat.Bmp }
     		};
 
-        private PixColormap colormap;
+        private PixColormap _colormap;
 
         #region Create\Load methods
 
@@ -87,7 +87,7 @@ namespace Tesseract {
 
             var colorMapHandle = LeptonicaApi.Native.pixGetColormap( this.Handle );
             if ( colorMapHandle != IntPtr.Zero ) {
-                this.colormap = new PixColormap( colorMapHandle );
+                this._colormap = new PixColormap( colorMapHandle );
             }
         }
 
@@ -97,17 +97,17 @@ namespace Tesseract {
 
         public PixColormap Colormap {
             get {
-                return this.colormap;
+                return this._colormap;
             }
             set {
                 if ( value != null ) {
                     if ( LeptonicaApi.Native.pixSetColormap( this.Handle, value.Handle ) == 0 ) {
-                        this.colormap = value;
+                        this._colormap = value;
                     }
                 }
                 else {
                     if ( LeptonicaApi.Native.pixDestroyColormap( this.Handle ) == 0 ) {
-                        this.colormap = null;
+                        this._colormap = null;
                     }
                 }
             }

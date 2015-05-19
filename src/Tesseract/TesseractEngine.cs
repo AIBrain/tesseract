@@ -186,7 +186,7 @@ namespace Tesseract {
             }
 
             // log a warning if TESSDATA_PREFIX is set
-            var tessDataPrefix = this.GetTessDataPrefix();
+            var tessDataPrefix = GetTessDataPrefix();
             if ( tessDataPrefix != null ) {
                 trace.TraceEvent( TraceEventType.Warning, 0, "Detected that the environment variable 'TESSDATA_PREFIX' is set to '{0}', this will be used as the data directory by tesseract.", tessDataPrefix );
             }
@@ -321,7 +321,7 @@ namespace Tesseract {
         public Page Process( Bitmap image, string inputName, Rect region, PageSegMode? pageSegMode = null ) {
             var pix = PixConverter.ToPix( image );
             var page = Process( pix, inputName, region, pageSegMode );
-            new PageDisposalHandle( page, pix );
+            var temp = new PageDisposalHandle( page, pix );
             return page;
         }
 
@@ -332,7 +332,7 @@ namespace Tesseract {
             }
         }
 
-        private string GetTessDataPrefix() {
+        private static string GetTessDataPrefix() {
             try {
                 return Environment.GetEnvironmentVariable( "TESSDATA_PREFIX" );
             }
@@ -344,10 +344,7 @@ namespace Tesseract {
 
         #region Event Handlers
 
-        private void OnIteratorDisposed( object sender, EventArgs e ) {
-            this.processCount--;
-        }
-
+        private void OnIteratorDisposed( object sender, EventArgs e ) => this.processCount--;
         #endregion Event Handlers
     }
 }
